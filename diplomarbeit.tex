@@ -1,0 +1,194 @@
+\documentclass[11pt,a4paper,openright,oneside]{report}
+
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{ltxtable}
+\usepackage{colortbl}
+\usepackage{booktabs}
+
+% UTF8-Zeichencode 
+\usepackage[utf8]{inputenc}
+
+% Dokument in deutsch
+\usepackage{ngerman}
+
+%\input{tex-Dateien/ExpLayout}
+\input{tex-Dateien/Layout}
+\input{tex-Dateien/Title}
+
+\hypersetup{pdftex,unicode,
+ pdfauthor={Arne Leitert},
+ pdftitle={Das Dominating Induced Matching Problem für azyklische Hypergraphen},
+ pdfkeywords={diploma thesis, dominating induced matching, acyclic hypergraphs, dually chordal, efficient domination, efficient edge domination},
+ pdfcreator=pdflatex}
+
+%\usepackage{gfsartemisia}
+%eventuell für überschriften
+\usepackage{calc}
+
+\usepackage{inconsolata}
+%\usepackage{bera}
+%\usepackage[scaled]{berasans}
+
+
+
+
+%% TikZ (http://www.texample.net/tikz/)
+\usepackage{tikz}
+\usetikzlibrary{shapes,positioning,fit,fadings,calc,decorations.pathmorphing}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{lowerBackground}
+\pgfsetlayers{lowerBackground,background,main}
+\definecolor{bggreen}{rgb}{0.57,0.81,0.31}
+\definecolor{bgblue}{rgb}{0.329,0.553,0.831}
+\definecolor{bgred}{rgb}{0.753,0.314,0.302}
+
+%%% Tikz-Stile:
+
+% Basis für Knoten
+\tikzstyle{nodeBase}=[minimum size=0.25cm,inner sep=0pt]
+
+% Basis für sichtbare Knoten
+\tikzstyle{visNode}=[nodeBase,thick,draw,fill=white]
+
+% Normale Knoten
+\tikzstyle{nN}=[visNode,circle]
+
+% Kleine Knoten
+\tikzstyle{sN}=[nN,minimum size=0.15cm]
+
+% Unsichtbarer Knoten
+\tikzstyle{hN}=[nodeBase,circle]
+
+% Knoten einer Kante des Matchings
+\tikzstyle{mN}=[visNode,minimum size=0.223cm]
+
+% Label
+\tikzstyle{lbl}=[font=\small]
+\tikzstyle{llbl}=[left,lbl]
+\tikzstyle{rlbl}=[lbl,right]
+\tikzstyle{tlbl}=[lbl,above]
+\tikzstyle{blbl}=[lbl,below]
+
+% Spannbaum von alphaL Graphen
+\tikzstyle{Tedge}=[very thick,clBlue,decoration={snake,amplitude=1},decorate]
+
+
+
+\newcommand{\cirBase}[1]{\tikz[baseline,line width=.1ex]{\node [draw,anchor=base,inner sep=.2ex,circle] {#1};}}
+
+\DeclareRobustCommand{\mathCir}[1]{%
+  \ifmmode \,\cirBase{#1}\,
+  \else
+    \cirBase{#1}
+  \fi
+}
+\newcommand{\join}{\mathCir{1}}
+\newcommand{\cojoin}{\mathCir{0}}
+
+\newcommand{\mC}{\mathcal{C}}
+\newcommand{\mE}{\mathcal{E}}
+\newcommand{\mF}{\mathcal{F}}
+\newcommand{\mI}{\mathcal{I}}
+\newcommand{\mK}{\mathcal{K}}
+\newcommand{\mL}{\mathcal{L}}
+\newcommand{\mN}{\mathcal{N}}
+\newcommand{\mO}{\mathcal{O}}
+\newcommand{\mP}{\mathcal{P}}
+\newcommand{\mS}{\mathcal{S}}
+\newcommand{\mU}{\mathcal{U}}
+\newcommand{\mV}{\mathcal{V}}
+
+\newcommand{\prR}{{\bfseries\boldmath$\Rightarrow$:\ }}
+\newcommand{\prL}{{\bfseries\boldmath$\Leftarrow$:\ }}
+
+\newcommand{\OBdA}{O.\,B.\,d.\,A.\ }
+\newcommand{\oBdA}{o.\,B.\,d.\,A.\ }
+\newcommand{\zB}{z.\,B.~}
+
+% Mehrere Zeilen in einer Tabelle zusammenfassen
+\usepackage{multirow}
+
+% Mehrfachspalten
+\usepackage{multicol}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thesisType{Diplomarbeit}
+%\title{\Huge Dominating Induced Matchings\\ für $\alpha$-azyklische Hypergraphen}
+\title{Das Dominating Induced Matching Problem für azyklische Hypergraphen}
+\author{Arne Leitert}
+\matNo{6201646}
+\studies{Diplom Informatik}
+\eMail{arne.leitert@uni-rostock.de}
+\chair{Lehrstuhl für Theoretische Informatik}
+\university{Universität Rostock \\
+            Fakultät für Informatik und Elektrotechnik}
+            
+
+\usepackage{makeidx}
+\makeindex
+%\usepackage{microtype}
+
+\begin{document}
+
+\pagestyle{headings}
+
+% ersten Seiten mit römischen Zahlen nummerieren
+\pagenumbering{roman}
+
+% Titelseite
+\maketitle
+
+% Dokument ist unter CC
+\input{tex-Dateien/CC}
+
+%\vspace*{\fill}
+
+\include{tex-Dateien/Abstract}
+
+% Inhaltsverzeichniss
+\tableofcontents
+
+% Nach Inhalt wieder arabische Zahlen benutzen und bei 1 beginnen.
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\include{tex-Dateien/Einleitung}
+
+\include{tex-Dateien/Graphen}
+
+\include{tex-Dateien/Hypergraphen}
+
+\include{tex-Dateien/Probleme}
+
+\include{tex-Dateien/Algorithmen}
+
+\include{tex-Dateien/Abschluss}
+
+%\include{tex-Dateien/Logik}
+
+%\include{tex-Dateien/Sonstiges}
+
+%\include{tex-Dateien/Design}
+
+\appendix%\parskip 2pt
+
+%\chapter{Definitionen}
+%{\setlength{\parskip}{2pt}\listtheorems{DefBox}}
+%\todo{Einheitliche Quellen:\\
+%- einheitlich Namen von Autoren, Journals usw. -- nicht mal abgekürzt und mal ausgeschrieben\\
+%- Keine Quellen doppelt}
+%
+
+\bibliography{quellen}
+
+\listoffigures
+
+%\printindex
+
+\include{tex-Dateien/Erklaerung}
+
+\end{document}

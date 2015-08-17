@@ -1,0 +1,47 @@
+\chapter{Einleitung}
+
+Das \emph{Dominating Induced Matching Problem} sucht nach einer Teilmenge der Kanten eines Graphen, so dass jede Kante des Graphen entweder in dieser Teilmenge ist oder mit genau einer solchen Kante benachbart ist. Es wird auch als \emph{Efficient Edge Domination Problem} bezeichnet und ist im Allgemeinen NP-vollständig \cite{dimNPv}.
+
+Die Besonderheit dieses Problems ist, dass es sowohl ein Pack- als auch ein Abdeckungsproblem darstellt. Es müssen genug Kanten gewählt werden, damit alle Kanten, die nicht zum Matching gehören mit einer Kante des Matchings verbunden sind. Zwischen den Kanten des Matchings müssen sich aber gleichzeitig immer mindestens zwei weitere Kanten befinden.
+
+Das Problem wurde für einfache Graphen bereits umfangreich studiert (siehe beispielsweise \cite{eedHoleFree, eedP7Free, Cardoso2011, Lu2002227, ChinLungLu|ChuanYiTang1998203}). Diese Arbeit untersucht das Problem nun für Hypergraphen. Dabei stehen azyklische Hypergraphen im Vordergrund.
+
+Diese Arbeit ist dafür in sechs Kapitel unterteilt. Nach der Einleitung befassen sich das zweite und dritte Kapitel mit Graphen und Hypergraphen. Dabei werden verschiedene Klassen vorgestellt und miteinander in Verbindung gebracht. Das Thema des vierten Kapitels sind dominierende Knoten- und Kantenmengen sowie die dazugehörigen Probleme (zu denen auch das Dominating Induced Matching Problem gehört). Basierend auf den Ergebnissen der vorherigen Kapitel zeigt dann das fünfte Kapitel algorithmische Ansätze zur Lösung des Problems. Abschließend werden im letzten Kapitel die Ergebnisse der Arbeit noch einmal zusammengefasst.
+
+%\todo{Fertigstellen}
+%
+%\bigskip
+%\bigskip
+%
+%Das Problem wurde zwar für einfache Graphen bereits umfangreich studiert
+%
+%hole free pol. \cite{eedHoleFree}\\
+%p7-free lin \cite{eedP7Free} \\
+%claw-free, convex pol \cite{Cardoso2011}\\
+%(Anwendung oder so) \cite{Livingston1988} \\
+%NP-complete on bipartite (planar bipartite) --- linear-time generalized series–parallel graphs and chordal graphs  \cite{Lu2002227}\\
+%\cite{ChinLungLu|ChuanYiTang1998203} \\
+%
+%
+%\bigskip
+%\bigskip
+%
+%jedoch kaum für Hypergraphen.
+%
+%\bigskip
+%\bigskip
+%
+%Diese Arbeit soll nun das Problem für die Klasse der azyklischen Hypergraphen untersuchen. Angestrebtes Ziel dabei ist es einen Polynomialzeit-Algorithmus zur Lösung des Problems zu finden oder zu zeigen, dass ein solcher Algorithmus nicht existiert.
+%
+%Das dazugehörige Entscheidungsproblem (Dominating Induced Matching
+%Problem; kurz DIM) fragt, ob ein Graph ein solches Matching besitzt. Für
+%Graphen wird es auch als Efficient Edge Domination Problem (EED)
+%bezeichnet und ist NP-vollständig \cite{dimNPv}. Dies gilt auch für Hypergraphen, da
+%jeder Graph auch ein Hypergraph ist.
+%
+%Das Besondere an DIM ist, dass es sowohl ein Pack- als auch ein
+%Abdeckungsproblem darstellt. Es müssen genug Kanten gewählt werden,
+%damit alle Kanten, die nicht zum Matching gehören mit einer des
+%Matchings verbunden sind. Zwischen den Kanten des Matching müssen
+%sich aber gleichzeitig immer mindestens zwei weitere Kanten befinden.
+%Somit muss jede Kante genau ein mal gematcht werden.

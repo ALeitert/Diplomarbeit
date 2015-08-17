@@ -1,0 +1,606 @@
+\chapter{Algorithmen}
+
+%\todo{Algorithmendesign}
+%\todo{Kapitelanfang neu formulieren}
+
+Dieses Kapitel stellt einige Algorithmen vor, mit denen sich das Dominating Induced Matching Problem für azyklische Hypergraphen lösen lässt. Dabei wird dieses jedoch nicht direkt gelöst, sondern wie in Abschnitt~\ref{sec:Reduktion} gezeigt, auf die Suche nach einer dominierenden Menge bzw. einem independent set reduziert.
+
+%Bei der Vorstellung der Algorithmen steht dabei die Algorithmusidde im Vordergrund. Für Implementierungsdetails oder Korrektheitsbeweise sei jeweils auf die Originalquelle verwiesen. Auch die Komplexität wird nicht genauer betrachtet. Zwar lassen sich einige der vorgestellten Algorithmen in Linearzeit implementieren, allerdings ist davon auszugehen, dass die Größe des Linegraphen bzw. dessen Quadrat jeweils quadratisch zunimmt. Somit muss für einen Linearzeitalgorithmus vermutlich ein anderer Ansatz verfolgt werden.
+
+Das Kapitel beginnt mit der Überprüfung, ob ein Hypergraph $\alpha$-azyklisch ist. Die nachfolgenden Abschnitte befassen sich dann lediglich mit den entsprechenden Linegraphen. Es wird der Einfachheit halber davon ausgegangen, dass der Hypergraph $\beta$- bzw. $\gamma$-azyklisch war, wenn der Linegraph strongly chordal bzw. distanzerblich ist.
+
+\section{Überprüfung des Hypergraphen}
+Um zu überprüfen, ob ein Hypergraph $\alpha$-azyklisch ist, bieten sich verschiedene Möglichkeiten an. Nachfolgend werden drei Varianten vorgestellt.
+
+\subsection{Mittels Definition}
+Eine Variante ist es, schlicht zu überprüfen, ob ein gegebener Hypergraph die in Definition~\ref{def:alphaAzyklisch} (S.~\pageref{def:alphaAzyklisch}) gestellten Bedingungen erfüllt. In diesem Fall müsste der 2-Section-""Graph chordal sein und jede (maximale) Clique des 2-Section-""Graphen auch eine Hyperkante darstellen.
+
+Wie bereits in Abschnitt~\ref{sec:chordalGraphs} (S.~\pageref{sec:chordalGraphs}) erwähnt, lässt sich in Linearzeit überprüfen, ob ein Graph chordal ist. In \cite{Rose1976} wird dazu ein Verfahren vorgestellt, bei dem auch eine perfekte Eliminationsordnung ermittelt wird (siehe auch Abschnitt~\ref{sec:SquareDC}). Mit dieser lassen sich dann auch die maximalen Cliquen ermitteln und mit den Hyperkanten vergleichen.
+
+\subsection{Mittels Graham-Reduktion}
+Eine weitere Möglichkeit bietet die Graham-Reduktion (siehe Definition~\ref{def:GrahamReduktion}, S.~\pageref{def:GrahamReduktion}). Aus ihrer Definition ergibt sich direkt ein Algorithmus, um zu testen, ob ein Hypergraph $\alpha$-azyklisch ist. Dazu entfernt man so lange entsprechende Knoten und Hyperkanten, bis nur noch eine leere Kante übrig bleibt, oder weder Knoten noch Kanten entfernt werden können.
+
+\subsection{Mittels des Algorithmus von Tarjan und Yannakakis}
+Ein Möglichkeit, die sich auch in Linearzeit implementieren lässt, wird in \cite{LinearTimeAcylicityTest} vorgestellt.
+
+Der erste Schritt des Verfahren ist eine von~$i=1$ bis~$i=k$ aufsteigende Nummerierung der Knoten und Hyperkanten, wobei sich der Wert von $k$ erst während der Nummerierung ergibt. Die dabei vergebenen Nummern seien der $\beta$-Wert der Hyperkante bzw. des Knotens. Allerdings muss nicht jede Hyperkante~$e$ eine Nummer erhalten. In diesem Fall ist $\beta(e)$ nicht definiert. 
+
+Für die Nummerierung wird zunächst eine Hyperkante~$e$ gewählt. Nun werden sowohl $e$ als auch alle unnummerierten Knoten~$v \in e$ mit $i$ nummeriert ($\beta(e) = \beta(v) = i$). Anschließend wird $i$ um eins erhöht ($i:=i+1$) und die nächste Hyperkante gewählt. Als nächste Hyperkante wird dabei eine Hyperkante gewählt, die noch unnummerierte Knoten enthält und deren Anzahl an nummerierten Knoten maximal ist. Dies wird nun so lange wiederholt, bis alle Knoten nummeriert wurden.
+
+Neben dem $\beta$-Wert erhält eine Hyperkante~$e$ auch einen $\gamma$-Wert ($\gamma(e)$). Dieser ist wie folgt definiert:
+\[ \gamma(e) = \begin{cases}
+\max \{ \beta(v) \mid v \in e \} & \text{$\beta(e)$ ist nicht definiert} \\ 
+\text{nicht definiert} & \forall\, v \in e: \beta(v) = \beta(e) \\ 
+\max \{ \beta(v) \mid v \in e, \beta(v) < \beta(e) \} & \text{sonst} 
+\end{cases} \]
+
+%\[ \gamma(e) = \begin{cases}
+%\text{nicht definiert} & \forall\, v \in e: \beta(v) = \beta(e) \\ 
+%\max \{ \beta(v) \mid v \in e \} & \text{sonst} 
+%\end{cases} \]
+
+
+%\todo{eventuell Übersetzung für maximum cardinality search}
+%Basis des Verfahrens ist eine sogenannte \emph{maximum cardinality search}.
+
+%Bei der maximum cardinality search handelt es sich eine von $n=|V|$ bis~$1$ absteigende Nummerierung der Knoten eines Hypergraphen. Als nächster Knoten wird dabei ein unnummerierter Knoten gewählt, der in der Hyperkante mit den meisten nummerierten Knoten liegt. Ist es nicht eindeutig, welcher Knoten oder welche Hyperkante als nächstes zu wählen ist, kann belibig gewählt werden.
+%
+%Eine Hyperkante sei \emph{erschöpft} (engl.: exhausted), wenn sie keinen unnummerierten Knoten besitzt. Es gehöre nun eine Hyperkante~$e$ zu den nicht erschöpften Hyperkanten mit den meisten nummerierten Knoten. Außerdem wird als nächstes der Knoten~$v \in e$ nummeriert. Ist nun $e$ weiterhin unerschöpft, gehört $e$ somit auch weiterhin zu den Hyperkanten mit den meisten nummerierten Knoten. Somit lässt sich die maximum cardinality search wie folgt verändern: Nach der Wahl einer Hyperkante~$e$ mit den meisten unnummerierten Knoten, werden alle Knoten in ihr nummeriert, bis $e$ erschöpft ist.
+
+In Abbildung~\ref{pic:Bsp_HypergraphGamaBeta} wurden für zwei Beispiel-Hypergraphen die $\beta$- und $\gamma$-Werte mit dem oben beschriebenen Verfahren vergeben.
+
+\begin{figure}[htbp]
+    \hspace*{\fill}
+    \subfloat[]{
+    \begin{tikzpicture}
+        \def\len{1.25}
+        \def\dis{0.025}
+        
+        \node[sN,lbl,inner sep=3pt] (n3) at (90:\len) { 1};
+        \node[sN,inner sep=3pt] (n4) at (-30:\len) {\small 1};
+        \node[sN,inner sep=3pt] (n2) at (210:\len) {\small 2};
+        
+        \node[sN,inner sep=3pt] (n1) at ($2*(150:\len)$) {\small 3};
+        
+%        \node[below=2pt,lbl] at ($-2*(0,\len)+2*cos(30)*(0,\len)$) {$2: 1$};
+        \node[below=2pt,lbl] at ($-1*(0,\len)$) {$2:1$};
+        \node[above right=2pt,lbl] at (30:\len) {$1:-$};
+        \node[above=2pt,lbl] at ($(150:\len)+2*(0,\len)-2*cos(30)*(0,\len)$) {$3 :2$};
+%        \path[thick,draw] ($(n3)+(-30:\dis)$) arc[start angle=-30,end angle=105,radius=\dis] -- ($(n1)+(105:\dis)$)
+%            arc[start angle=105,end angle=195,radius=\dis] -- ($(n2)+(195:\dis)$)
+%            arc[start angle=195,end angle=330,radius=\dis] -- cycle;
+        \begin{pgfonlayer}{background}
+        \path[very thick,draw,fill,clBlue] ($(n3)+(90:\dis)$) 
+            arc[start angle=90,delta angle=-120,radius=\dis+\len]
+            arc[start angle=-30,delta angle=-180,radius=\dis]
+            arc[start angle=-30,delta angle=120,radius=-\dis+\len]
+            arc[start angle=-90,delta angle=-180,radius=\dis];
+        
+        %\def\dis{0.6}
+  
+        \path[very thick,draw,fill,clOrange] ($(n2)+(30:\dis)$)
+            arc[start angle=210,delta angle=120,radius=-\dis+\len]
+            arc[start angle=150,delta angle=-180,radius=\dis]
+            arc[start angle=-30,delta angle=-120,radius=\dis+\len]
+            arc[start angle=210,delta angle=-180,radius=\dis];
+            
+  
+        %\def\dis{0.7}
+  
+        \path[very thick,draw,fill,clGreen] ($(n3)+(-60:\dis)$)
+            arc[start angle=-60,delta angle=180,radius=\dis]
+            arc[start angle=-60,delta angle=-60,radius=-\dis+2*cos(30)*\len,label={[red]center:blub}] 
+            arc[start angle=60,delta angle=180,radius=\dis]
+            arc[start angle=60,delta angle=-60,radius=-\dis+2*cos(30)*\len]
+            arc[start angle=180,delta angle=180,radius=\dis]
+            arc[start angle=180,delta angle=-60,radius=-\dis+2*cos(30)*\len]
+            ;
+
+            %arc[start angle=-90,end angle=105,radius=\dis] -- ($(n1)+(105:\dis)$)
+            %arc[start angle=105,end angle=195,radius=\dis] -- ($(n2)+(195:\dis)$)
+            %arc[start angle=195,delta angle=195,radius=\dis]
+            %arc[start angle=210,end angle=90,radius=-\dis+\len];
+        
+        %\def\dis{0.8}
+  
+%        \path[very thick,fill,clRed] ($(n3)+(0:\dis)$)
+%            arc[start angle=0,end angle=180,radius=\dis]
+%            arc[start angle=0,end angle=-60,radius=-\dis+2*cos(30)*\len]
+%            arc[start angle=120,delta angle=180,radius=\dis]
+%            arc[start angle=120,delta angle=-60,radius=-\dis+2*cos(30)*\len]
+%            arc[start angle=240,delta angle=180,radius=\dis]
+%            arc[start angle=240,delta angle=-60,radius=-\dis+2*cos(30)*\len];
+        \end{pgfonlayer}
+    \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[]{
+    \begin{tikzpicture}
+        \def\len{1.25}
+        \def\dis{0.025}
+        
+        \node[sN,lbl,inner sep=3pt] (n3) at (90:\len) { 1};
+        \node[sN,inner sep=3pt] (n4) at (-30:\len) {\small 1};
+        \node[sN,inner sep=3pt] (n2) at (210:\len) {\small 2};
+        
+        \node[sN,inner sep=3pt] (n1) at ($2*(150:\len)$) {\small 3};
+        
+        \node[below=2pt,lbl] at ($-2*(0,\len)+2*cos(30)*(0,\len)$) {$2: 1$};
+        \node[below=2pt,lbl] at ($-1*(0,\len)$) {$-: 2$};
+        \node[above right=2pt,lbl] at (30:\len) {$1:-$};
+        \node[above=2pt,lbl] at ($(150:\len)+2*(0,\len)-2*cos(30)*(0,\len)$) {$3 :2$};
+%        \path[thick,draw] ($(n3)+(-30:\dis)$) arc[start angle=-30,end angle=105,radius=\dis] -- ($(n1)+(105:\dis)$)
+%            arc[start angle=105,end angle=195,radius=\dis] -- ($(n2)+(195:\dis)$)
+%            arc[start angle=195,end angle=330,radius=\dis] -- cycle;
+        \begin{pgfonlayer}{background}
+        \path[very thick,draw,fill,clBlue] ($(n3)+(90:\dis)$) 
+            arc[start angle=90,delta angle=-120,radius=\dis+\len]
+            arc[start angle=-30,delta angle=-180,radius=\dis]
+            arc[start angle=-30,delta angle=120,radius=-\dis+\len]
+            arc[start angle=-90,delta angle=-180,radius=\dis];
+        
+        %\def\dis{0.6}
+  
+        \path[very thick,draw,fill,clOrange] ($(n2)+(30:\dis)$)
+            arc[start angle=210,delta angle=120,radius=-\dis+\len]
+            arc[start angle=150,delta angle=-180,radius=\dis]
+            arc[start angle=-30,delta angle=-120,radius=\dis+\len]
+            arc[start angle=210,delta angle=-180,radius=\dis];
+            
+  
+        %\def\dis{0.7}
+  
+        \path[very thick,draw,fill,clGreen] ($(n3)+(-60:\dis)$)
+            arc[start angle=-60,delta angle=180,radius=\dis]
+            arc[start angle=-60,delta angle=-60,radius=-\dis+2*cos(30)*\len,label={[red]center:blub}] 
+            arc[start angle=60,delta angle=180,radius=\dis]
+            arc[start angle=60,delta angle=-60,radius=-\dis+2*cos(30)*\len]
+            arc[start angle=180,delta angle=180,radius=\dis]
+            arc[start angle=180,delta angle=-60,radius=-\dis+2*cos(30)*\len]
+            ;
+
+            %arc[start angle=-90,end angle=105,radius=\dis] -- ($(n1)+(105:\dis)$)
+            %arc[start angle=105,end angle=195,radius=\dis] -- ($(n2)+(195:\dis)$)
+            %arc[start angle=195,delta angle=195,radius=\dis]
+            %arc[start angle=210,end angle=90,radius=-\dis+\len];
+        
+        %\def\dis{0.8}
+  
+        \path[very thick,fill,clRed] ($(n3)+(0:\dis)$)
+            arc[start angle=0,end angle=180,radius=\dis]
+            arc[start angle=0,end angle=-60,radius=-\dis+2*cos(30)*\len]
+            arc[start angle=120,delta angle=180,radius=\dis]
+            arc[start angle=120,delta angle=-60,radius=-\dis+2*cos(30)*\len]
+            arc[start angle=240,delta angle=180,radius=\dis]
+            arc[start angle=240,delta angle=-60,radius=-\dis+2*cos(30)*\len];
+        \end{pgfonlayer}
+    \end{tikzpicture}
+    }
+%    \hspace*{\fill}
+%    \subfloat[]{
+%    \begin{tikzpicture}[scale=0.5]
+%        \def\len{1.5}
+%        \def\dis{0.5}
+%        
+%        \node[sN,inner sep=2pt] (n3) at (90:\len) {3};
+%        \node[sN,inner sep=2pt] (n4) at (-30:\len) {4};
+%        \node[sN,inner sep=2pt] (n2) at (210:\len) {2};
+%        
+%        \node[sN,inner sep=2pt] (n1) at ($(n3)+sin(60)/sin(45)*(195:\len)$) {1};
+%        
+%        \path[thick,draw] ($(n3)+(-30:\dis)$) arc[start angle=-30,end angle=105,radius=\dis] -- ($(n1)+(105:\dis)$)
+%            arc[start angle=105,end angle=195,radius=\dis] -- ($(n2)+(195:\dis)$)
+%            arc[start angle=195,end angle=330,radius=\dis] -- cycle;
+%        
+%        \path[thick,draw] ($(n3)+(90:\dis)$) 
+%            arc[start angle=90,delta angle=-120,radius=\dis+\len]
+%            arc[start angle=-30,delta angle=-180,radius=\dis]
+%            arc[start angle=-30,delta angle=120,radius=-\dis+\len]
+%            arc[start angle=-90,delta angle=-180,radius=\dis];
+%        
+%        \def\dis{0.6}
+%  
+%        \path[thick,draw] ($(n2)+(30:\dis)$)
+%            arc[start angle=210,delta angle=120,radius=-\dis+\len]
+%            arc[start angle=150,delta angle=-180,radius=\dis]
+%            arc[start angle=-30,delta angle=-120,radius=\dis+\len]
+%            arc[start angle=210,delta angle=-180,radius=\dis];
+%            
+%  
+%        \def\dis{0.7}
+%  
+%        \path[thick,draw] ($(n3)+(-90:\dis)$)
+%            arc[start angle=-90,end angle=105,radius=\dis] -- ($(n1)+(105:\dis)$)
+%            arc[start angle=105,end angle=195,radius=\dis] -- ($(n2)+(195:\dis)$)
+%            arc[start angle=195,delta angle=195,radius=\dis]
+%            arc[start angle=210,end angle=90,radius=-\dis+\len];
+%        
+%        \def\dis{0.8}
+%  
+%        \path[thick,draw,clRed] ($(n3)+(0:\dis)$)
+%            arc[start angle=0,end angle=180,radius=\dis]
+%            arc[start angle=0,end angle=-60,radius=-\dis+2*cos(30)*\len]
+%            arc[start angle=120,delta angle=180,radius=\dis]
+%            arc[start angle=120,delta angle=-60,radius=-\dis+2*cos(30)*\len]
+%            arc[start angle=240,delta angle=180,radius=\dis]
+%            arc[start angle=240,delta angle=-60,radius=-\dis+2*cos(30)*\len];
+%
+%    \end{tikzpicture}
+%    }
+%    \hspace*{\fill}
+%    \subfloat[]{
+%    \begin{tikzpicture}[scale=0.5]
+%        \def\len{1.5}
+%        \def\dis{0.5}
+%        
+%        \node[sN] (n3) at (90:\len) {};
+%        \node[sN] (n4) at (-30:\len) {};
+%        \node[sN] (n2) at (210:\len) {};
+%        
+%        \node[sN] (n1) at ($(n3)+sin(60)/sin(45)*(195:\len)$) {};
+% 
+%        \path[thick,draw] ($(n3)+(30:\dis)$) arc[start angle=30,end angle=210,radius=\dis] -- ($(n4)+(-150:\dis)$) arc[start angle=-150,end angle=30,radius=\dis] -- cycle;
+%        
+%        \def\dis{0.6}
+%  
+%        \path[thick,draw] ($(n2)+(90:\dis)$) arc[start angle=90,end angle=270,radius=\dis] -- ($(n4)+(-90:\dis)$)
+%            arc[start angle=-90,end angle=90,radius=\dis] -- cycle;
+%            
+%  
+%        \def\dis{0.7}
+%  
+%        \path[thick,draw] ($(n3)+(-30:\dis)$) arc[start angle=-30,end angle=105,radius=\dis] -- ($(n1)+(105:\dis)$)
+%            arc[start angle=105,end angle=195,radius=\dis] -- ($(n2)+(195:\dis)$)
+%            arc[start angle=195,end angle=330,radius=\dis] -- cycle;
+%        
+%        \def\dis{0.8}
+%  
+%        \path[thick,draw] ($(n3)+(30:\dis)$) arc[start angle=30,end angle=150,radius=\dis] -- ($(n2)+(150:\dis)$)
+%            arc[start angle=150,end angle=270,radius=\dis] -- ($(n4)+(270:\dis)$)
+%            arc[start angle=-90,end angle=30,radius=\dis] -- cycle;
+%        
+%    \end{tikzpicture}
+%    }
+    \hspace*{\fill}
+    \caption[Beispiel für die $\beta$- und $\gamma$-Werte in Hypergraphen]{Beispiel für die $\beta$- und $\gamma$-Werte in Hypergraphen: Die Zahlen in den Knoten sind deren $\beta$-Werte. Die erste Zahl einer Hyperkante ist ihr $\beta$- und die zweite ihr $\gamma$-Wert. (Beispiel entnommen aus \cite{LinearTimeAcylicityTest})}
+    \label{pic:Bsp_HypergraphGamaBeta}
+\end{figure}
+
+
+Mit Hilfe der $\beta$- und $\gamma$-Werte lässt sich nun überprüfen, ob ein Hypergraph $\alpha$-azyklisch ist.
+
+\begin{Theorem} \label{theo:AcyclicityTest} \cite{LinearTimeAcylicityTest}
+     Es seien $H=(V,\mE)$ ein Hypergraph und $e_i \in \mE$ die Hyperkante mit dem $\beta$-Wert $i$ ($\beta(e_i) = i$).
+    
+    $H$ ist $\alpha$-azyklisch genau dann, wenn gilt:
+    \[ \forall\,i \in \{1, \ldots, k\}: \forall\, e \in \mE\, (\gamma(e)=i):e\cap \{v \mid \beta(v) < i \} \subseteq e_i \]
+\end{Theorem}
+
+Aus Satz~\ref{theo:AcyclicityTest} leitet sich nun direkt ein Algorithmus ab. Dieser lässt sich so modifizieren, dass er in Linearzeit läuft.
+
+\section{$\gamma$-azyklische Hypergraphen}
+Die Linegraphen $\gamma$-azyklischer Hypergraphen sind distanzerblich chordal (Satz~\ref{theo:GammaLineGrpah}, S.~\pageref{theo:GammaLineGrpah}). Für diesen Abschnitt ist dabei die Distanzerblichkeit die interessante Eigenschaft. In \cite{Damiand200199} wird ein Algorithmus angegeben, mit dem sich in Linearzeit überprüfen lässt, ob ein gegebener Graph distanzerblich ist.
+
+Interessant ist die Distanzerblichkeit eines Graphen deswegen, weil sie die Cliquenweite beschränkt.
+
+\begin{Theorem} \cite{cliqueWidthPerfectGraphs}
+    Die Cliquenweite von distanzerblichen Graphen ist höchstens 3. Der dazugehörige Cliquenweite-Ausdruck lässt sich in Linearzeit ermitteln.
+\end{Theorem}
+
+Ist die Cliquenweite einer Graphenklasse beschränkt und ist zusätzlich für einen Graphen der entsprechende Cliquenweite-Ausdruck gegeben, so lässt sich ein Problem für diesen Graphen in Linearzeit lösen, wenn es in monadischer Prädikatenlogik zweiter Stufe (engl.: monadic second-order logic)  definiert werden kann \cite{ClWidthSOL}. Prädikatenlogik zweiter Stufe erweitert die Prädikatenlogik erster Stufe um die Möglichkeit, dass auch Prädikate an Quantoren gebunden werden können. Beschränkt man sich zusätzlich auf einstellige Prädikate, dann spricht man von monadischer Prädikatenlogik zweiter Stufe. Eine ausführliche Betrachtung des Themas wird es voraussichtlich in \cite{GrStrucAndMSOL} geben.
+
+ Gelingt es also, die Suche nach einem efficient dominating set in monadischer Prädikatenlogik zweiter Stufe zu formulieren, dann lässt sich diese Suche auch in Linearzeit für distanzerbliche Graphen abschließen.
+ 
+
+
+\section{$\beta$-azyklische Hypergraphen}
+Ist der gegebene Hypergraph $\beta$-azyklisch, so ist sein Linegraph strongly chordal. Dies schließt auch die Möglichkeit ein, dass der Linegraph ein Intervallgraph ist.
+
+\subsection{Intervallgraphen}
+Das Überprüfen, ob ein Graph ein Intervallgraph ist, ist in Linearzeit möglich. In \cite{Booth1976}, \cite{Habib200059} und \cite{korte68} sind dazu Algorithmen angegeben. Außerdem wird in \cite{wipdIntervall} ein Linearzeit-Algorithmus vorgestellt, mit dem sich ein effcient dominating set für einen Intervallgraphen ermitteln lässt.
+
+%- Erkennen \\
+%\cite{Booth1976,korte68,Habib200059} \\
+%{\footnotesize \url{http://epubs.siam.org/sicomp/resource/1/smjcat/v18/i1/p68_s1?isAuthorized=no} \\
+%\url{http://www.springerlink.com/content/p16527606774t37m/} \\
+%\url{http://www.sciencedirect.com/science/article/pii/S0304397597002417}}
+%
+%- ind per dom \cite{wipdIntervall}
+
+\subsection{Strongly chordale Graphen}
+Im Fall der strongly chordalen Graphen ist bisher kein Algorithmus bekannt, der eine Erkennung in Linearzeit ermöglicht. Zwei der schnellsten Algorithmen laufen in $\mO(|E| \log|V|)$ \cite{PaigeTarjan1987}  bzw. $\mO(|V|^2)$  \cite{Spinrad1993229}. Der nächste Schritt ist das Ermitteln einer strong perfect elimination ordering. Der zeitliche Aufwand hierfür liegt bei $\mO(|V|^3)$  \cite{Anstee1984}. Mit Hilfe einer strong perfect elimination ordering lässt sich nun ein minimum weight independent dominating set in Linearzeit berechnen \cite{Faber1984}. Aufgrund von Satz~\ref{theo:EEDiffEDiffMWDiffMWIS} lässt sich somit auch überprüfen, ob der gegebene Graph ein efficient dominating set besitzt.
+
+
+\section{$\alpha$-azyklische Hypergraphen}
+Ist für einen Hypergraphen nur bekannt, dass er $\alpha$-azyklisch ist, so lässt sich der Linegraph auch lediglich auf die Klasse der dually chordalen Graphen eingrenzen. 
+
+
+\subsection{Erkennen von dually chordalen Graphen}
+Prinzipiell können auch Hypergraphen, die nicht $\alpha$-azyklisch sind, einen dually chordalen Graphen als Linegraphen besitzen. Somit wäre es sinnvoll die Klasse des Linegraphen statt des Hypergraphen zu ermitteln.
+
+In \cite{duallyChordal} wird gezeigt, dass in Linearzeit getestet werden kann, ob ein Graph dually chordal ist. Allerdings wird dabei der Graph in einen Hypergraphen umgewandelt und getestet, ob der Hypergraph $\alpha$-azyklisch ist. Bei dieser Umwandlung wird der sogenannte \emph{Nachbarschaftshypergraph} gebildet. 
+
+\begin{mydef}[Nachbarschaftshypergraph\index{Nachbarschaftshypergraph}\index{$\mN(\cdot)$}]
+    Gegeben sei ein Graph $G=(V,E)$. Dessen \emph{Nachbarschaftshypergraph} $\mN(G)=(V,\mE)$ ist wie folgt definiert:
+    \[ \mE = \{N[v] \mid v \in V\} \]
+\end{mydef}
+
+\begin{Theorem}
+    \cite{duallyChordal} Ein Graph $G$ ist dually chordal genau dann, wenn sein Nachbarschaftshypergraph $\mN(G)$ $\alpha$-azyklisch ist.
+\end{Theorem}
+
+Da die Größe des Nachbarschaftshypergraphen linear mit der Größe des ursprünglichen Graphen wächst, lässt sich somit in Linearzeit testen, ob ein Graph dually chordal ist.
+
+\subsection{Minimum Weight Dominating Set}
+Um nun ein efficient dominating set in einem dually chordalen Graphen~$G$ zu finden, bietet Satz~\ref{theo:EEDiffEDiffMWDiffMWIS} prinzipiell zwei Möglichkeiten. Eine davon ist das Finden einer dominierenden Menge mit minimalem Gewicht in~$G$. Diese Variante erweist sich allerdings als ungeeignet.
+
+\begin{Theorem}
+    Das Ermitteln eines minimum weight dominating set ist NP-vollständig für dually chordalen Graphen.
+\end{Theorem}
+
+\begin{Proof}
+    Gegeben sei ein beliebiger Graph $G=(V,E)$. Es wird nun ein Graph $G^*=(V^*,E^*)$ wie folgt erstellt:
+    \begin{align*}
+        V^* &= \{ v^* \} \cup V \\
+        E^* &= \{v^*v \mid v \in V \} \cup E
+    \end{align*}
+    
+    Offensichtlich ist $G^*$ dually chordal ($v^*$ ist maximaler Nachbar für alle Knoten). Eine Gewichtsfunktion $\omega$ sei nun wie folgt definiert:
+    \[ \omega(v)=
+            \begin{cases}
+                |V| + 1 & \text{wenn } v = v^* \\ 
+                1 & \text{sonst} 
+            \end{cases}
+    \]
+    
+    Es ist nun jede dominierende Menge $D \subseteq V$ für $G$ auch eine dominierende Menge in $G^*$. Außerdem ist das Gesamtgewicht von $D$ immer kleiner als das des Knotens~$v*$. Somit ist $D$ die kleinste dominierende Menge in $G$ genau dann, wenn $D$ die dominierende Menge mit dem kleinsten Gewicht in $G^*$ ist.
+    \qed
+\end{Proof}
+
+\subsection{Quadrat dually chordaler Graphen}\label{sec:SquareDC}
+Neben der Suche nach einer dominierenden Menge mit minimalem Gewicht bietet Satz~\ref{theo:EEDiffEDiffMWDiffMWIS} noch die Option, ein independent set mit maximalem Gewicht im Quadrat eines Graphen zu suchen.
+
+\begin{Theorem}\label{theo:dcSquareChordal}
+    \cite{Brandstaedt199843} Das Quadrat eines dually chordalen Graphen~$G$ ist chordal. Außerdem ist eine maximale Nachbarschaftsordnung für $G$ eine perfekte Eliminationsordnung für $G^2$.
+\end{Theorem}
+
+Da das Quadrat des vorliegenden Linegraphen chordal ist, ist es nun möglich, ein independent set zu ermitteln. In \cite{Frank1976} wird dafür ein Linearzeit"=Algorithmus vorgestellt. Voraussetzung für diesen ist eine perfekte Eliminationsordnung.
+
+\subsubsection{Ermitteln einer perfekten Eliminationsordnung}
+Es gibt verschiedene Möglichkeiten, eine perfekte Eliminationsordnung für chordale Graphen zu ermitteln. Einige Algorithmen mit linearer Laufzeit werden in \cite{Panda1996111}, \cite{Rose1976} und \cite{LinearTimeAcylicityTest} vorgestellt. Ein weiteres Verfahren, mit dem sich  jede perfekte Eliminationsordnung finden lässt, ist in \cite{Shier1984325} beschrieben.
+
+Auch Satz~\ref{theo:dcSquareChordal} bietet einen Ansatz zum Finden einer perfekten Eliminationsordnung. Da es sich bei dem gegebenen chordalen Graphen um das Quadrat eines dually chordalen Graphen~$G$ handelt, kann auch eine maximale Nachbarschaftsordnung für $G$ ermittelt werden. In \cite{Brandstaedt199843} wird dafür der folgende Algorithmus vorgestellt. 
+
+\begin{Algorithm}[MNO, \cite{Brandstaedt199843}]\label{algo:mno}
+    \textbf{Eingabe:} Ein dually chordaler Graph $G=(V,E)$.\\
+    \textbf{Ausgabe:} Eine maximale Nachbarschaftsordnung $(v_1,\ldots,v_n)$ von $G$.\\
+
+    \begin{codeLine}
+        \item Initialisiere alle Knoten $v \in V$ als unnummeriert und unmarkiert.
+        \item Wähle einen beliebigen Knoten $v \in V$. Nummeriere $v$ mit $n$ (also $v_n = v$) und setze $mn(v) := v$.
+        \item \textbf{Repeat}
+              \begin{innerCodeLine}
+                  \item Wähle aus allen unmarkierten Knoten einen nummerierten Knoten~$u$, so dass $N[u]$ eine maximale Anzahl an nummerierten Knoten enthält.
+                  \item Nummeriere alle unnummerierten Knoten $x$ aus $N[u]$ fortlaufend mit der höchstmöglichen Nummer zwischen $1$ und $n-1$, die noch frei ist. Setze außerdem $mn(x) := u$.
+                  \item Markiere $u$;
+              \end{innerCodeLine}
+              \textbf{Until} Alle Knoten sind nummeriert.
+    \end{codeLine}
+\end{Algorithm}
+
+Die so ermittelte maximale Nachbarschaftsordnung für $G$ ist nun auch eine perfekte Eliminationsordnung für $G^2$. Außerdem weist der Algorithmus jedem Knoten einen maximalen Nachbarn zu. Beides wird sich später noch als hilfreich erweisen (siehe Abschnitt~\ref{sec:VermeidenDesQuadrats}). Abbildung~\ref{pic:bsp_Algo_MNO} zeigt die Anwendung des Algorithmus an einen Beispielgraphen.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        
+        \def\len{1.8}
+        
+        \node[nN,inner sep=2pt,fill=clLight40Green] (ll) at (0,0) {6};
+        \node[nN,inner sep=2pt,fill=clLight40Green] (lt) at (30:\len) {5};
+        \node[nN,inner sep=2pt,fill=clLight40Green] (lb) at (-30:\len) {4};
+        \node[nN,inner sep=2pt] (rt) at ($(lt.center)+(\len,0)$) {2};
+        \node[nN,inner sep=2pt,fill=clLight40Green] (rb) at ($(lb.center)+(\len,0)$) {3};
+        \node[nN,inner sep=2pt] (rr) at ($(rb.center)+(30:\len)$) {1};
+            
+        \draw (lb) -- (lt) -- (rb) -- (rt) -- (rr);
+        
+        \draw[<-,very thick,clBlue] (ll)--(lt);
+        \draw[<-,very thick,clBlue] (ll)--(lb);
+        \draw[<-,very thick,clBlue] (lt)--(rt);
+        \draw[<-,very thick,clBlue] (lb)--(rb);
+        \draw[<-,very thick,clBlue] (rb)--(rr);
+    \end{tikzpicture}
+    \caption[Beispiel für Algorithmus~\ref{algo:mno}]{Beispiel für Algorithmus~\ref{algo:mno}. Die Nummerierung der Knoten ist die vom Algorithmus vergebene Nummerierung. Markierte Knoten sind grün hinterlegt. Die blauen Pfeile zeigen jeweils auf den maximalen Nachbarn eines Knotens (ausgenommen Knoten~$6$). Der Algorithmus beginnt mit Knoten~$6$ und wählt die Knoten danach in folgender Reihenfolge aus: $(6,4,5,3)$. Es sind allerdings auch andere Reihenfolgen möglich. (Graph entnommen aus~\cite{Frank1976})}
+    \label{pic:bsp_Algo_MNO}
+\end{figure}
+
+\subsubsection{Ermitteln eines Maximum Weight Independent Sets}
+Da nun eine perfekte Eliminationsordnung gegeben ist, lässt sich nun auch ein maximum weight independent set mittels des in \cite{Frank1976} vorgestellten Algorithmus berechnen. Ein Beispiel für die Anwendung des Algorithmus ist in Abbildung~\ref{pic:bsp_Algo_mwIS} gegeben.
+
+\begin{Algorithm}[mwIS, \cite{Frank1976}]\label{algo:mwis}
+    \textbf{Eingabe:} Ein chordaler Graph $G=(V,E)$ mit perfekter Eliminationsordnung $(v_1,\ldots,v_n)$ und einer Gewichtsfunktion~$\omega$.\\
+    \textbf{Ausgabe:} Ein maximum weight independent set~$\mI$.\\
+
+    \begin{codeLine}
+        \item  $\mI := \emptyset$
+        \item \textbf{For} $i:= 1$ \textbf{To} $n$
+              \begin{innerCodeLine}
+                  \item[] Wenn $\omega(v_i)>0$ ist, dann markiere $v_i$ und setze $\omega(u) := \max(\omega(u) - \omega(v_i),0)$ für alle Knoten $u \in N(v_i)$.
+              \end{innerCodeLine}
+              
+        \item \textbf{For} $i:= n$ \textbf{DownTo} $1$
+              \begin{innerCodeLine}
+                  \item[] Wenn $v_i$ markiert ist, dann setze $\mI := \mI \cup \{v_i\}$ und entferne von allen Knoten $u \in N(v_i)$ die Markierung.
+              \end{innerCodeLine}
+    \end{codeLine}
+\end{Algorithm}
+
+\begin{figure}[htbp]
+    %\hspace*{\fill}
+    \subfloat[Der Graph~$G$ mit Gewichten, Nachbarschaftsordnung (blaue Pfeile) und den Kanten in $G^2$ (gestrichelt)\label{pic:bsp_Algo_mwIS_a}]
+    {\begin{tikzpicture}
+        
+        \def\len{1.8}
+        
+        \node[nN,inner sep=2pt] (ll) at (0,0) {2};
+        \node[nN,inner sep=2pt] (lt) at (30:\len) {3};
+        \node[nN,inner sep=2pt] (lb) at (-30:\len) {3};
+        \node[nN,inner sep=2pt] (rt) at ($(lt.center)+(\len,0)$) {3};
+        \node[nN,inner sep=2pt] (rb) at ($(lb.center)+(\len,0)$) {3};
+        \node[nN,inner sep=2pt] (rr) at ($(rb.center)+(30:\len)$) {2};
+        
+        %\node (lll) at ($(ll.west)+(-1,0)$) {};
+        %\node (rrr) at ($(rr.east)+(1,0)$) {};
+            
+        \draw[dashed] (ll)--(lt)--(rt) (lb)--(rb)--(rr);
+        
+        \draw[<-,very thick,clBlue] (ll)--(lb);
+        \draw[<-,very thick,clBlue] (lb)--(lt);
+        \draw[<-,very thick,clBlue] (lt)--(rb);
+        \draw[<-,very thick,clBlue] (rb)--(rt);
+        \draw[<-,very thick,clBlue] (rt)--(rr);
+    \end{tikzpicture}}
+    %\hspace*{\fill}\\
+    \hspace*{\fill}
+    \subfloat[$G^2$ nach dem Algorithmus mit markierten Knoten (grün), gewählten Knoten (sechseckig) und relevante Gewichte.\label{pic:bsp_Algo_mwIS_b}]
+    {\begin{tikzpicture}
+        
+        \def\len{1.8}
+        
+        \node[nN,inner sep=2pt] (ll) at (0,0) {0};
+        \node[nN,inner sep=2pt,fill=clLight40Green] (lt) at (30:\len) {2};
+        \node[nN,inner sep=2pt,fill=clLight40Green,regular polygon,regular polygon sides=6] (lb) at (-30:\len) {1};
+        \node[nN,inner sep=2pt,fill=clLight40Green,regular polygon,regular polygon sides=6] (rt) at ($(lt.center)+(\len,0)$) {1};
+        \node[nN,inner sep=2pt] (rb) at ($(lb.center)+(\len,0)$) {0};
+        \node[nN,inner sep=2pt,fill=clLight40Green] (rr) at ($(rb.center)+(30:\len)$) {2};
+            
+        \draw[] (ll)--(lt)--(rt) (lb)--(rb)--(rr) (ll)--(lb) (lb)--(lt) (lt)--(rb) (rb)--(rt) (rt)--(rr);
+
+    \end{tikzpicture}}
+%    \hspace*{\fill}
+%    \subfloat[$G^2$ nach der zweiten Schleife\label{pic:bsp_Algo_mwIS_c}]
+%    {\begin{tikzpicture}
+%        
+%        \def\len{1.8}
+%        
+%        \node[nN,inner sep=2pt] (ll) at (0,0) {0};
+%        \node[nN,inner sep=2pt] (lt) at (30:\len) {2};
+%        \node[nN,inner sep=2pt,fill=clLight40Green] (lb) at (-30:\len) {1};
+%        \node[nN,inner sep=2pt,fill=clLight40Green] (rt) at ($(lt.center)+(\len,0)$) {1};
+%        \node[nN,inner sep=2pt] (rb) at ($(lb.center)+(\len,0)$) {0};
+%        \node[nN,inner sep=2pt] (rr) at ($(rb.center)+(30:\len)$) {2};
+%            
+%        \draw[] (ll)--(lt)--(rt) (lb)--(rb)--(rr) (ll)--(lb) (lb)--(lt) (lt)--(rb) (rb)--(rt) (rt)--(rr);
+%    \end{tikzpicture}}
+    %\hspace*{\fill}
+    \caption[Beispiel für Algorithmus~\ref{algo:mwis}]{Beispiel für Algorithmus~\ref{algo:mwis}. Der Algorithmus wird auf den Graphen~$G^2$ angewendet (blaue und gestrichelte Kanten in \subref{pic:bsp_Algo_mwIS_a}). In \subref{pic:bsp_Algo_mwIS_b} ist $G^2$ nach dem Algorithmus dargestellt. Die Beschriftung der Knoten ist das Gewicht der Knoten, wenn es überprüft wird (negative Gewichte sind als $0$ dargestellt). Vom Algorithmus in der ersten Schleife markierte Knoten sind grün hinterlegt. In der zweiten Schleife gewählte Knoten sind zusätzlich sechseckig. }
+    \label{pic:bsp_Algo_mwIS}
+\end{figure}
+
+
+%\vspace*{+10pt}
+\subsection{Vermeiden des Quadrats}\label{sec:VermeidenDesQuadrats}
+Ein Problem beim Bilden des Quadrats ist es, dass sich damit auch die Anzahl der Kanten quadriert. Gleiches gilt somit auch für die Laufzeit. Ziel dieses Abschnitts ist es nun, auf die Bildung des Quadrats zu verzichten, um eine Laufzeit zu erreichen, die linear zur Größe des Linegraphen ist.
+
+\subsubsection{Reihenfolge der Knoten}
+Ein Algorithmus, der auf das Quadrat des Graphen verzichtet, kann durch Modifikation von Algorithmus~\ref{algo:mwis} erreicht werden. Der erste Punkt dabei ist die perfekte Eliminationsordnung. Wie bereits erwähnt, ist hierfür Satz~\ref{theo:dcSquareChordal} hilfreich. Eine maximale Nachbarschaftsordnung für einen dually chordalen Graphen~$G$ ist auch eine perfekte Eliminationsordnung für dessen Quadrat. Sie kann in Linearzeit mit Algorithmus~\ref{algo:mno} ermittelt werden.
+
+\subsubsection{Verrechnung der Gewichte}
+Der nächste Punkt ist das Subtrahieren des Gewichts des aktuellen Knotens~$v_i$ von dessen Nachbarn~$N(v_i)$. Das Problem dabei ist, dass die Nachbarschaften in $G$ und $G^2$ unterschiedlich sind. Eine einfache Lösung wäre es, nicht nur die direkten Nachbarn von $v_i$ zu ermitteln sondern auch die Nachbarn der Nachbarn. Dies führt jedoch wieder zu einer quadratischen Laufzeit. Es kann allerdings ausgenutzt werden, dass $v_i$ immer einen maximalen Nachbarn~$m_i$ besitzt.
+
+\begin{Theorem}\label{theo:ijInE_iff_mjInE2}
+    Es seien $G=(V,E)$ ein Graph, $G^2=(V,E^2)$ dessen Quadrat und $(v_1,\ldots,v_n)$ eine maximale Nachbarschaftsordnung für $G$, wobei $m_i$ der maximale Nachbar von $v_i$ ist. Außerdem seien $1 \leq i < j \leq n$ und $v_i \neq m_i$. Für alle Knoten $v_j$ gilt nun:
+    $$v_iv_j \in E^2 \Leftrightarrow m_iv_j \in E$$
+\end{Theorem}
+
+\begin{Proof}
+    \prL $v_j$ ist mit dem maximalen Nachbarn von $v_i$ verbunden ($m_iv_j \in E$). Somit ist der Abstand von $v_i$ zu $v_j$ in $G$ höchstens $2$. Also sind $v_i$ und $v_j$ auch in $G^2$ miteinander verbunden ($v_iv_j \in E^2$).
+    
+    \prR $v_i$ und $v_j$ sind miteinander in $G^2$ verbunden ($v_iv_j \in E^2$). Es kann nun \oBdA angenommen werden, dass $v_iv_j \notin E$ ist. Folglich existiert ein Knoten~$v_k$, der mit $v_i$ und $v_j$ verbunden ist ($v_iv_k,v_kv_j \in E$). Nun gilt es zwei Fälle zu unterscheiden:
+    \begin{enumerate}
+        \item \label{case:ProofSquare_c1} $i < k$. Per Definition ist der maximale Nachbar $m_i$ mit allen Nachbarn von $v_k$ verbunden. Somit auch mit $v_j$.
+        
+        \item \label{case:ProofSquare_c2} $k < i$. Da $v_k$ vor $v_i$ in der Nachbarschaftsordnung liegt, besitzt $v_k$ einen maximalen Nachbarn $m_k$, der sowohl mit $v_i$ also auch $v_j$ verbunden ist. Somit kann die Fallunterscheidung für $m_k$ wiederholt werden.
+    \end{enumerate}
+    
+    Per Voraussetzung ist ein Knoten nie sein maximaler Nachbar (außer $v_n$). Daraus folgt, dass sich Fall~\ref{case:ProofSquare_c2} nun so lange wiederholt, bis $i<k$ ist und Fall~\ref{case:ProofSquare_c1} eintritt.
+    \qed
+\end{Proof}
+
+Anmerkung: Damit Satz~\ref{theo:ijInE_iff_mjInE2} gültig ist, darf (bis auf den letzten Knoten) kein Knoten sein eigener maximaler Nachbar sein. Allerdings erfüllt eine von Algorithmus~\ref{algo:mno} berechnete Nachbarschaftsordnung diese Bedingung.
+
+Satz~\ref{theo:ijInE_iff_mjInE2} erlaubt es nun, Algorithmus~\ref{algo:mwis} so zu ändern, dass die Gewichte auch in Linearzeit korrekt berechnet werden. Dazu erhält jeder Knoten~$v$ neben seinem eigenen Gewicht~$\omega$ ein zusätzliches Gewicht~$\omega_p$, welches mit dem Wert~$0$ initialisiert wird. Dieses Zusatzgewicht dient nun als Zwischenspeicher.
+
+Das Gewicht eines Knotens wird nun nicht mehr direkt abgezogen, sondern erst in dessen maximalen Nachbarn zwischengespeichert. Von dort wird es dann zu einem späteren Zeitpunkt weiterverteilt. Dies stellt sicher, dass über jede Kante höchstens zweimal ein Gewicht "`wandert"' (je einmal $\omega$ und $\omega_p$).
+
+\subsubsection{Sperrung von Nachbarn}
+Der letzte Punkt beim Modifizieren von Algorithmus~\ref{algo:mwis} ist das Sperren von Knoten, die zu nahe an einem gewählten Knoten liegen. In Algorithmus~\ref{algo:mwis} werden dazu (in der ersten Schleife) Knoten als Kandidaten markiert. Wird nun in der zweiten Schleife ein Knoten gewählt, werden anschließend die Markierungen sämtlicher Nachbarn entfernt. Sie fallen damit als Kandidaten für die gesuchte Knotenmenge weg.
+
+Auch in diesem Fall würde es zu quadratischer Laufzeit führen, wenn man die Nachbarn der Nachbarn ermittelt. Das Problem lässt sich dadurch lösen, dass man eine zusätzliche Markierung einführt. Für die Markierung eines Knotens~$v$ gibt es dann drei Möglichkeiten: $v$ ist unmarkiert, $v$ ist Kandidat oder $v$ ist gesperrt.
+
+Ein Knoten~$v$ wird nun zur Lösungsmenge hinzugefügt, wenn er als Kandidat markiert ist und weder $v$ noch einer seiner Nachbarn gesperrt wurden. Außerdem werden in diesem Fall alle Nachbarn als gesperrt markiert.
+
+\subsection{Zusammenfassung}
+Das oben Beschriebene führt nun zu folgendem Algorithmus, der ein efficient dominating set für dually chordale Graphen berechnet (falls es existiert):
+
+\begin{Algorithm}[dcED]\label{algo:dcED}
+    \textbf{Eingabe:} Ein dually chordaler Graph $G=(V,E)$.\\
+    \textbf{Ausgabe:} Ein efficient dominating set~$D$ (falls existent).\\
+
+    \begin{codeLine}
+        \item $D := \emptyset$
+        
+        \item \textbf{For All} $v \in V$
+              \begin{innerCodeLine}
+                  \item[] $\omega(v) := |N[v]|$
+                  \item[] $\omega_p(v) := 0$
+              \end{innerCodeLine}
+        
+        \item Ermittle eine maximale Nachbarschaftsordnung $(v_1,\ldots,v_n)$ sowie die dazugehörigen maximalen Nachbarn $(m_1,\ldots,m_n)$ mittels Algorithmus~\ref{algo:mno}.
+        
+        \item \textbf{For} $i:= 1$ \textbf{To} $n$
+              \begin{innerCodeLine}
+                  \item Ziehe das Gewicht~$\omega_p(u)$ aller Knoten $u \in N[v_i]$ vom Gewicht~$\omega(v_i)$ ab ($\forall\,u \in N(v_i): \omega(v_i):=\omega(v_i)-\omega_p(u))$
+                  
+                  \item Wenn $\omega(v_i)>0$ ist, dann markiere $v_i$ als Kandidat und setze $\omega_p(m_i) := \omega_p(m_i) + \omega(v_i)$.
+              \end{innerCodeLine}
+              
+        \item \textbf{For} $i:= n$ \textbf{DownTo} $1$\nopagebreak
+              \begin{innerCodeLine}
+                  \item[] Wenn $v_i$ als Kandidat markiert ist und kein Knoten $u \in N[v_i]$ gesperrt ist, dann setze $D := D \cup \{v_i\}$ und sperre alle Knoten $u \in N(v_i)$.
+              \end{innerCodeLine}
+              
+        \item  $D$ ist ein efficient dominating set genau dann, wenn $\sum_{v \in D}|N[v]|=|V|$.
+    \end{codeLine}
+\end{Algorithm}
+
+\begin{Theorem}\label{theo:dcED}
+    Algorithmus~\ref{algo:dcED} findet ein efficient dominating set für dually chordale Graphen in Linearzeit.
+\end{Theorem}
+
+Die Korrektheit ergibt sich aus der oberen Argumentation (besonders Satz~\ref{theo:ijInE_iff_mjInE2}). Daher wird an dieser Stelle auf einen Beweis verzichtet.
+
+\subsection{Der gewichtete Fall}
+Mit Algorithmus~\ref{algo:dcED} ist es nun möglich, ein efficient dominating set für einen dually chordalen Graphen zu finden. Somit auch ein dominating induced Matching für $\alpha$-azyklische Hypergraphen. Das Problem ist damit jedoch nur für den ungewichteten Fall gelöst.
+
+Angenommen, für die Kanten eines Hypergraphen bzw. die Knoten des Linegraphen sei auch eine Gewichtsfunktion~$\alpha$ gegeben. Es soll nun ein dominating induced Matching mit maximalem Gewicht ermittelt werden. Da für das ursprüngliche Problem bereits eine Knotenmenge mit maximalem Gewicht gesucht wird, müssen die Gewichte nur angepasst werden. Nachfolgend werden zwei Varianten dafür vorgestellt.
+
+\subsubsection{Multiplikator-Variante}
+Eine Möglichkeit, um sowohl die Anzahl der Nachbarn als auch das gegebene Gewicht einer Hyperkante (bzw. Knotens~$v$ im Linegraphen) zu berücksichtigen, ist es, die Summe von beiden zu bilden. Dabei wird die Anzahl der Nachbarn allerdings vorher mit einem hinreichend großen Multiplikator~$m$ verrechnet.
+\[ \omega(v) = m \cdot N[v] + \alpha(v) \]
+
+Die Variante hat zwei Nachteile. Zum einen muss ein Multiplikator gewählt werden, der groß genug ist, damit die Anzahl der Nachbarn die dominante Größe bleibt. Zum anderen können negative Gewichte dazu führen, dass sich am Gesamtgewicht der gefundenen Knotenmenge  nicht mehr direkt ablesen lässt, ob sie dominierend ist.
+
+\subsubsection{Vektor-Variante}
+Alternativ zu einem Gesamtgewicht, kann man die Gewichte als Vektoren betrachten. Ein solches Vektorgewicht besteht aus dem ursprünglichen Gewicht und der Anzahl der Nachbarn. 
+\[ \omega(v) =\binom{N[v]}{\alpha(v)} \]
+
+Allerdings ist es notwendig, zu definieren, wann ein Vektor größer ist als ein anderer.
+    \begin{align*}
+        \binom{a}{b} = \binom{x}{y} &\Leftrightarrow a=x \land b =y \\
+        \binom{a}{b} > \binom{x}{y} &\Leftrightarrow a>x \lor (a=x \land b>y)
+    \end{align*}
+
+Der Vorteil besteht darin, dass die Anzahl der Nachbarn immer vom ursprünglichen Gewicht getrennt ist. Somit muss kein Multiplikator errechnet werden. Außerdem lässt sich am Gesamtgewicht sofort ablesen, ob es sich um eine dominierende Menge handelt.
+\[ D \subseteq V \text{ ist ein efficient dominating set } \Leftrightarrow \sum_{d \in D} \omega(d) > \binom{|V|}{-\infty} \]

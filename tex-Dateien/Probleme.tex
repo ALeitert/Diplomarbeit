@@ -1,0 +1,425 @@
+\chapter{Dominierende Mengen}
+
+%% Kommandos für Sechsecke
+
+% Defieniert eine Koordinate (hexBase). Beispiel: \HexagonBase{\x}{\y}{\len}
+%\newcommand{\HexagonBase}[3]
+%{
+%    \coordinate (hexBase) at ($2*#3*cos(30)*(#1,0)+#2*cos(30)*(#3,0)+1.5*#3*(0,#2)$);
+%}
+%
+%\newcommand{\HexagonTopLeft}[1]{($(hexBase)+(30:#1)$)}
+%\newcommand{\HexagonTop}[1]{($(hexBase)+(90:#1)$)}
+%\newcommand{\HexagonTopRight}[1]{($(hexBase)+(150:#1)$)}
+%\newcommand{\HexagonBottomRight}[1]{($(hexBase)+(210:#1)$)}
+%\newcommand{\HexagonBottom}[1]{($(hexBase)+(270:#1)$)}
+%\newcommand{\HexagonBottomLeft}[1]{($(hexBase)+(330:#1)$)}
+%
+% Zeichnet ein Sechseck an den übergeben Koordinaten
+% Beispiel \HexagonComplete{\x}{\y}{\len}
+%\newcommand{\HexagonComplete}[4]
+%{
+%    \HexagonBase{#1}{#2}{#3}
+%    \draw[#4] \HexagonTopLeft{#3}--\HexagonTop{#3}--\HexagonTopRight{#3}--\HexagonBottomRight{#3}--\HexagonBottom{#3}--\HexagonBottomLeft{#3}--\HexagonTopLeft{#3};
+%}
+
+Dieses Kapitel befasst sich mit dominierenden Knoten- und Kantenmengen in Graphen. Es werden verschiedene Varianten vorgestellt und Verbindungen zwischen ihnen aufgezeigt. 
+%Kapitel befasst sich mit:\\
+%- Dominierende Knoten- / Kanten-Mengen\\
+%- verschiedene Varianten davon\\
+%- Zusammenhänge dieser Varianten
+%
+\section{Einleitung}
+
+Angenommen, man hat eine Fläche gegeben, die in einzelne Teilflächen (Parzellen) eingeteilt ist. Ein entsprechendes Beispiel ist in Abbildung~\ref{pic:bsp_DominierendeMenge} gegeben. Diese in Parzellen unterteilte Fläche soll nun komplett abgedeckt werden. Denkbare Anwendungen hierfür sind beispielsweise Video-Überwachung, Bewässerung von Feldern oder das Anbieten von Funknetzen.
+
+ Um eine solche Abdeckung zu erreichen, werden nun einige Parzellen ausgewählt. Eine gewählte Parzelle deckt dabei sich selbst und ihre benachbarten Parzellen ab. Für das aktuelle Beispiel seien zwei Parzellen benachbart, wenn sie zumindest einen gemeinsamen Punkt haben. In Abbildung~\ref{pic:bsp_DominierendeMenge} wurde eine Parzelle gewählt und ihr Abdeckungsbereich grün eingefärbt.
+
+\newcommand{\taCoord}[2]{($#1*(\len,0)+#2*(60:\len)$)}
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        \def\len{0.66}
+        \def\size{3}
+
+        \fill[clLight60Green] \taCoord{2}{-1}--\taCoord{2}{1}--\taCoord{3}{1}--\taCoord{5}{-1}--\taCoord{5}{-2}--\taCoord{3}{-2}--cycle;
+        
+        
+        \foreach \y [evaluate=\y as \xMinVal using int(\y<0?0-\y:0),evaluate=\y as \xMaxVal using int(\y>0?\size+\size-\y:\size+\size)] in {-\size,...,\size}
+        {
+        
+            %Parzellen zeichnen
+            \draw[gray] \taCoord{\xMinVal}{\y} -- \taCoord{\xMaxVal}{\y};
+            \draw[gray] \taCoord{\y+\size}{\xMinVal-\size} -- \taCoord{\y+\size}{\xMaxVal-\size};
+            
+            \draw[gray] \taCoord{\xMinVal}{int(\y>0?\y-1:\size)} -- 
+                        \taCoord{int(\y>0?\xMinVal+3*\size-\xMaxVal+\xMinVal-1:2*\size)}{int(\y>0?\y-3*\size+\xMaxVal-\xMinVal:\size-\xMaxVal+\xMinVal)};
+            
+            % Koordinaten            
+            \foreach \x in {\xMinVal,...,\xMaxVal}
+            {               
+                %\node[red] at \taCoord{\x}{\y} {\tiny\x,\y};
+            }
+        }
+        
+        \draw[very thick,clDark50Green] \taCoord{2}{-1}--\taCoord{2}{1}--\taCoord{3}{1}--\taCoord{5}{-1}--\taCoord{5}{-2}--\taCoord{3}{-2}--cycle;
+        
+        \fill[very thick,clDark50Green] \taCoord{3}{-1}--\taCoord{3}{0}--\taCoord{4}{-1}--cycle;
+        
+        
+        % Rand zeichnen
+        \draw[thick] \taCoord{0}{0} -- \taCoord{0}{\size} -- \taCoord{\size}{\size} -- 
+                     \taCoord{2*\size}{0} -- \taCoord{2*\size}{-\size} -- \taCoord{\size}{-\size} -- cycle;
+                     
+    \end{tikzpicture}
+    \caption[Beispiel für eine in Parzellen unterteilte Fläche]{Beispiel für eine in Parzellen unterteilte Fläche. Die dunkelgrün eingefärbte Parzelle deckt sich selbst und ihre Nachbarn (hellgrün) ab.}
+    \label{pic:bsp_DominierendeMenge}
+\end{figure}
+
+%\begin{figure}[htbp]
+%    \centering
+%    \begin{tikzpicture}
+%        \def\len{0.3}
+%        %\foreach \y [evaluate=\y as \yval using ifthenelse(\y>=0, 8-int(\y), 9+\y)] in {-5,...,4}{
+%        %\foreach \y [evaluate=\y as \yval using 8-abs(\y)+0.5*div(\y,abs(\y))+0.5)] in {-5,...,4}{
+%        \foreach \y [evaluate=\y as \xMinVal using int(\y<0?0-\y:0),evaluate=\y as \xMaxVal using int(\y>0?8-\y:8)] in {4,...,-4}{
+%        \foreach \x in {\xMinVal,...,\xMaxVal}
+%        {               
+%            %\coordinate (seb) at ($2*\len*cos(30)*(\x,0)+\y*cos(30)*(\len,0)+1.5*\len*(0,\y)$);
+%            %\Sechseck
+%            \HexagonComplete{\x}{\y}{\len}{}
+%            \node[gray] at (hexBase) {\tiny\x,\y};
+%        }
+%        }
+%    \end{tikzpicture}
+%    \caption{Beispiel dominierende Menge -- TODO}
+%    \label{pic:bsp_DominierendeMenge}
+%\end{figure}
+
+Gesucht ist nun eine (möglichst kleine) Menge von Parzellen, damit die gesamte Fläche abgedeckt wird. Eine solche Menge wird als \emph{dominierende Menge} bezeichnet. Überträgt man das Konzept auf einen Graphen, so ergibt sich folgende Definition:
+
+
+%In der Regel bezeichnet eine dominierenden Menge (engl. dominating set) eine Teilmenge der Knoten eines Grahen (siehe \cite[Definition~1.1.18]{brandstaedt1999graph} oder \cite{wikiE:DomSet}). Da sich diese Arbeit aber mit dominierenden Knoten- und Kantenmengen befasst, sei an dieser Stelle eine allgemeine Definition gegeben.
+
+%Dieses Konzept sei nun allgemein definiert für eine belibige Menge.
+%\begin{mydef}[dominierende Menge\index{dominierende Menge}]
+%    Es sei $M$ eine nichtleere, endliche Menge, $\wp(M)$ deren Potenzmenge und $\mN : M \rightarrow \wp(M)$ eine Nachbarschaftsfunktion.
+%    
+%    Eine Menge $D\subseteq M$ ist \emph{dominierend} genau dann, wenn gilt:
+%    \[    \bigcup_{d \in D}\mN(d) \cup D= M \]
+%\end{mydef}
+%
+%Das dazugehörige Problem sucht nach der kleinsten Teilmenge, die dominierend ist. Im gewichteten Fall wird dabei die Summe der Gewichte minimiert.
+%
+%\begin{mydef}[Dominierungs-Problem]
+%\textbf{Eingabe:} Eine Menge $M$, eine Nachbarschaftsfunktion $\mN : M \rightarrow \wp(M)$, eine Gewichtsfunktion $\omega:M \rightarrow \mathbb{R}$ und ein Maximalgewicht $k$.
+%
+%\\ \vspace*{5pt}
+%\textbf{Frage:} Existiert eine dominierende Menge $D \subseteq M$ mit $\sum_{d \in D}\omega(d) \leq k$?
+%\end{mydef}
+%
+%Der ungewichtete Fall lässt sich dabei auch als gewichteter betrachten, wobei alle Knoten das gleiche Gewicht haben.
+
+%Ein solche allgemeine Definition ist natürlich auch für Graphen gültig. Interessanter ist jedoch, dass sich diese allgemeine Form  immer so umwandeln lässt, dass nach einer dominierenden Knotenmenge in einem Graphen gesucht wird. Dazu übernimmt man $M$ als Knotenmenge und fügt eine (gerichtete) Kante $uv$ genau dann ein, wenn $u$ in der Nachbarschaft von $v$ liegt ($u\in \mN(v)$). Somit ist die nachfolgende Definition genau so allgemeingültig, wie vorherige.
+
+\begin{mydef}[dominierende Menge\index{dominierende Menge}]
+    Es sei $G=(V,E)$ ein Graph. Eine Knotenmenge $D \subseteq V$ ist \emph{dominierend} für $G$ genau dann, wenn gilt:
+    \[ \bigcup_{d \in D}N[d] = V \]
+\end{mydef}
+
+%\todo{Graph für Felderbeispiel vom Anfang}
+
+Das dazugehörige Problem sucht nach einer kleinsten Teilmenge, die dominierend ist. Im gewichteten Fall wird dabei die Summe der Gewichte minimiert. Bereits ungewichtet ist das Problem NP-vollständig \cite{garey1979computers}.
+
+Zur Abgrenzung der in Abschnitt~\ref{sec:DomVar} vorgestellten Varianten wird eine dominierende Menge, die keinen weiteren Bedingungen unterliegt, in dieser Arbeit als \emph{simple} bezeichnet.
+
+%\begin{mydef}[domination problem]
+%    \textbf{Eingabe:} Ein Graph $G=(V,E)$, eine Gewichtsfunktion $\omega:V \rightarrow \mathbb{R}$ und ein Maximalgewicht $k$.
+%
+%    \textbf{Frage:} Existiert eine dominierende Menge $D \subseteq M$ mit $\sum_{d \in D}\omega(d) \leq k$?
+%\end{mydef}
+
+\section{Unabhängige Mengen}
+Bevor im nächsten Abschnitt verschiedene Varianten von dominierenden Mengen vorgestellt werden, definiert dieser Abschnitt kurz das Konzept von unabhängigen Mengen.
+
+Eine unabhängige Menge (engl.: independent set) ist eine Knotenmenge, bei denen kein Knoten mit einem anderen benachbart ist. Das Ermitteln eines größten independent sets in einem Graphen ist NP-vollständig.
+
+\begin{mydef}[unabhängige Menge]
+    In einem Graphen $G=(V,E)$ ist eine Teilmenge der Knoten $\mI \subseteq V$ eine \emph{unabhängige Knotenmenge} genau dann, wenn gilt: \[ \forall\, u,v \in \mI: uv \notin E \]
+\end{mydef}
+
+%Ähnlich wie bei Funktionen (siehe~\cite{wikiD:Extremwert}) kann man bei unabhängigen Mengen zwischen einem lokalen und einem globalen Maximum unterscheiden. In \cite{brandstaedt1999graph} wird zwischen einem \emph{maximum} bzw. \emph{maximal} independent set unterschieden.
+%
+%Im Fall eines lokal maximalen independent sets $\mI$ gibt es in einem Graphen~$G$ keinen weiteren Knoten~$v$, so dass $\mI \cup \{v\}$ ebenfalls unabhängig ist. Ist ein independent set $\mI$ ein globales Maximum, dann existiert kein weiteres independent set $\mI^*$ mit $|\mI|<|\mI^*|$.
+%
+%Jedes (lokal) maximale independent set~$\mI$ stellt auch eine dominierende Menge dar. Gäbe es einen Knoten~$v$, der nicht von $\mI$ dominiert wird, wäre $\mI \cup \{v\}$ ebenfalls ein independent set und somit $\mI$ nicht maximal.
+
+\section{Varianten dominierender Mengen}\label{sec:DomVar}
+Die Anforderungen an eine dominierende Menge lassen sich erweitern. Dieser Abschnitt stellt drei Varianten für dominierende Mengen vor.
+
+\subsection{Independent Dominating Set}
+Ein mögliches Kriterium ist, dass die Knoten der dominierenden Menge ein independent set bilden. Man spricht dann von einem \emph{independent dominating set}.
+
+\begin{mydef}[independent dominating set]
+    In einem Graphen $G=(V,E)$ ist eine dominierende Menge $D \subseteq V$ \emph{unabhängig} genau dann, wenn gilt:
+    \[\forall \, d,e \in D: de \notin E\]
+\end{mydef}
+
+\subsection{Perfect Dominating Set}
+Eine weitere Variante wird als \emph{perfect dominating set} bezeichnet. Dabei wird jeder Knoten, der nicht zur dominierenden Menge gehört, von genau einem Knoten dominiert.
+
+\begin{mydef}[perfect domination]
+    Es sei $D \subseteq V$ eine dominierende Menge im Graphen $G=(V,E)$. $D$ ist \emph{perfekt} genau dann, wenn für alle $v \in V \setminus D$ gilt:
+    \[ \exists !\, d \in D: v \in N[d] \]
+\end{mydef}
+
+Bei einem perfect dominating set ist zu beachten, dass es sich nur auf die Knoten bezieht, die nicht zur dominierenden Menge gehören. Es muss sich somit nicht notwendigerweise auch um eine unabhängige dominierende Menge handeln.
+
+\subsection{Efficient Dominating Set}
+
+%\todo{$D$ ist ED in $G$ $\iff$ $D$ ist dom set in $G$ und ind set in $G^2$}
+
+Ist eine dominierende Menge sowohl unabhängig als auch perfekt, dann spricht man von einem \emph{efficient dominating set}. Dabei ist jeder Knoten in der abgeschlossenen Nachbarschaft von genau einem Knoten der dominierenden Menge.
+
+\begin{mydef}[efficient dominating set]
+    In einem Graphen $G=(V,E)$ ist eine Menge $D \subseteq V$ ein \emph{efficient dominating set} genau dann, wenn gilt:
+    \[ \forall\, v \in V: \exists!\, d \in D: v \in N[d] \]
+\end{mydef}
+
+Während sowohl eine unabhängige als auch eine perfekte dominierende Menge für jeden Graphen möglich sind, besitzt hingegen nicht jeder Graph ein efficient dominating set. Beispiele hierfür sind unter anderem die Graphen $C_4$ und $C_5$.
+
+\subsection{Bekannte Fälle}
+Für die in Kapitel~\ref{chp:Graphen} vorgestellten Graphenklassen ist für einige Varianten ein effizienter Algorithmus bekannt oder es konnte nachgewiesen werden, dass die Variante NP-vollständig ist. Die Tabelle~\ref{tbl:domination} gibt dazu eine Übersicht.
+\begin{table}[htbp]
+    \centering
+    \setlength\tabcolsep{.75em}
+    \setlength\arrayrulewidth{1pt}
+    %\renewcommand{\arraystretch}{1.4} 
+    \arrayrulecolor{clChapTxt}
+    \begin{tabularx}{\linewidth}{@{}lXl@{}}
+        \midrule[1pt]
+        \bfseries\rmfamily\textcolor{clSecTxt}{Klasse} & \bfseries\rmfamily\textcolor{clSecTxt}{Dominierungs-Variante} & \bfseries\rmfamily\textcolor{clSecTxt}{Komplexität}  \\
+        \midrule[1pt]
+        chordal & simple & NP-vollständig \cite{booth1982} \\
+         & independent & Linear \cite{Faber1982} \\
+         & weighted independent & NP-vollständig \cite{GerardJ2004} \\
+         & efficient & NP-vollständig \cite{ChainChin1996} \\
+        \midrule[.4pt]
+        dually chordal & simple & Linear \cite{Brandstaedt199843} \\
+        \midrule[.4pt]
+        strongly chordal\footnotemark & simple & Linear \cite{Faber1984} \\
+         & weighted independent & Linear \cite{Faber1984} \\
+         \midrule[.4pt]
+         Intervall- & efficient & Linear \cite{wipdIntervall} \\
+        \midrule[1pt]
+    \end{tabularx}
+    \caption{Übersicht über die Komplexität verschiedener Dominierungsprobleme}
+    \label{tbl:domination}
+    %\footnote{mit gegebener strong perfect elimination ordering} 
+\end{table}
+\footnotetext{mit gegebener strong perfect elimination ordering}
+
+
+\section{Dominierende Kantenmengen}
+
+Bei Kantenmengen sucht man häufig nach sogenannten Matchings. Dabei handelt es sich um eine Teilmenge der Kanten eines Graphen, wobei zwei Kanten keinen gemeinsamen Knoten besitzen.
+
+\begin{mydef}[Matching\index{Matching}]\label{def:Matching}
+    Gegeben sei ein Hypergraph $H=(V,\mE)$. Eine Menge $M \subseteq \mE$ heißt \emph{Matching} genau dann, wenn für alle $e,e' \in M$ ($e \neq e'$) gilt: $e\cap e' = \emptyset$.
+\end{mydef}
+
+Ein solches Matching kann nun auch dominierend sein. Dabei sollen die anderen Kanten dominiert werden. Zusätzlich sei noch die Bedingung gegeben, dass zwischen zwei Kanten des Matchings mindestens zwei weitere Kanten liegen. Man spricht dann von einem \emph{induced} Matching.
+
+\begin{mydef}[dominating induced Matching\index{dominating induced Matching}]
+Gegeben sei ein Hypergraph $H=(V,\mE)$ und ein Matching $M$. $M$ ist ein \emph{dominating induced Matching} genau dann, wenn gilt:
+%%% Original-Definition
+% \forall\ e,e' \in M&: dist_G(e,e') \geq 2 & \text{\emph{induced}} \\
+% \forall\ e \in \mE\, \backslash\, M &: \exists\ \varepsilon \in M \text{ mit } \varepsilon\cap e \neq \emptyset & \text{\emph{dominating}}
+\[ \forall\,e \in \mE : \exists!\, m \in M \text{ mit } m\cap e \neq \emptyset \]
+\end{mydef}
+
+Vergleicht man diese Definition nun mit der für ein efficient dominating set, so stellt man folgenden Zusammenhang fest:
+
+\begin{Theorem}\label{theo:DimIffED}
+    In einem Hypergraphen $H=(V,\mE)$ ist eine Kantenmenge $M \subseteq \mE$ ein dominating induced Matching genau dann, wenn $M$ ein efficient dominating set im Linegraph~$L(H)$ ist.
+\end{Theorem}
+
+\begin{Proof}
+    Es sei $H=(V,\mE)$ ein Hypergraph, $L(H)=(\mE,E)=(V',E)$ dessen Linegraph und $M$ ein dominating induced Matching in $H$.
+
+    Es gilt nun per Definition:
+    \[ \forall\, e \in \mE: \exists! \,m \in M: m\cap e \neq \emptyset \]
+    
+    Bildet man nun den Linegraphen~$L(H)$, kann man die Aussage wie folgt formulieren:
+    \[ \forall\, e \in V': \exists!\,m \in M: (me \in E \lor m=e) \]
+    
+    In einem Graphen ist ein Knoten~$m$ mit einem Knoten~$e$ verbunden oder identisch ($me \in E \lor m=e$) genau dann, wenn $m$ in der abgeschlossenen Nachbarschaft von $e$ liegt ($m \in N[e])$. Somit lässt sich die obige Aussage erneut umformen.
+    \[ \forall\, e \in V': \exists!\,m \in M: e \in N[m] \]
+    
+    Dies entspricht nun der Definition eines efficient dominating sets. Da alle durchgeführten Umformungen Äquivalenzumformungen waren, ist somit auch Satz~\ref{theo:DimIffED} erfüllt.
+    \qed
+\end{Proof}
+
+%\begin{align*}
+%    M \subseteq \mE \text{ ist DIM in H} & \Leftrightarrow \forall\, e \in \mE: \exists!\,m \in M: m\cap e \neq \emptyset \\
+%     & & \text{(Linegraph bilden)}\\
+%    M \subseteq V' \text{ ist DIM in H} & \Leftrightarrow \forall\, e \in V': \exists!\,m \in M: (me \in E \lor m=e) \\ 
+%                                        & \Leftrightarrow \forall\, e \in V': \exists!\,m \in M: e \in N[m] \\ 
+%                                        & \Leftrightarrow M \subseteq V' \text{ ist PID in $L(H)$}\\ 
+%\end{align*}
+%
+Für einen Hypergraphen~$H$ lässt sich somit ein dominating induced Matching ermitteln, indem man ein efficient dominating set in dessen Linegraph $L(H)$ sucht.
+
+\section{Reduktion von Efficient Domination}\label{sec:Reduktion}
+%Wie oben gezeigt, lässt sich ein dominating induced Matching für einen Hypergraphen $H$ dadurch ermitteln, dass man ein efficient dominating set für dessen Linegraph $L(H)$ ermittelt. 
+In diesem Abschnitt wird nun gezeigt, dass sich die Suche nach einem efficient dominating set in einem Graphen reduziert werden kann auf die Suche nach einer dominierenden Menge mit minimalem Gewicht und auf die Suche nach einer unabhängigen Menge mit maximalem Gewicht im Quadrat des Graphen.
+
+%\subsubsection{Definitionen}
+%\paragraph{dominating induced Matching (DIM):} Gegeben: Hypergraph $H=(V,\mE)$
+%\[ M \subseteq \mE \text{ ist DIM}:\Leftrightarrow \forall\, e \in \mE: \exists!\,m \in M: m\cap e \neq \emptyset \]
+%
+%\paragraph{independent perfect dominating set (PID):} Gegeben: Graph $G=(V,E)$
+%\[ D \subseteq V \text{ ist PID} :\Leftrightarrow \forall\, v \in V: \exists!\,d \in D: v \in N[d] \]
+%
+%Folgerung:
+%\[ D \text{ ist PID} \Rightarrow \forall\, u,v \in D (u \neq v): N[u] \cap N[v] = \emptyset \]
+%
+%\subsubsection{Reduktion von DIM auf PID}
+%Gegeben: Hypergraph $H=(V,\mE)$ und Linegraph $(V',E)=L(H)=(\mE,E)$
+%\begin{align*}
+%    M \subseteq \mE \text{ ist DIM in H} & \Leftrightarrow \forall\, e \in \mE: \exists!\,m \in M: m\cap e \neq \emptyset \\
+%     & & \text{(Linegraph bilden)}\\
+%    M \subseteq V' \text{ ist DIM in H} & \Leftrightarrow \forall\, e \in V': \exists!\,m \in M: (me \in E \lor m=e) \\ 
+%                                        & \Leftrightarrow \forall\, e \in V': \exists!\,m \in M: e \in N[m] \\ 
+%                                        & \Leftrightarrow M \subseteq V' \text{ ist PID in $L(H)$}\\ 
+%\end{align*}
+%
+
+Der Kern der Reduktionen ist die Gewichtung der Knoten. Dafür sei eine Gewichtsfunktion $\omega$ wie folgt definiert: Jeder Knoten~$v$ erhält als Gewicht die Anzahl der Knoten in seiner abgeschlossenen Nachbarschaft.
+\[ \omega(v) := |N[v]| \]
+
+ Um eine kürzere Schreibweise zu ermöglichen, seien zusätzlich für eine Knotenmenge $D \subseteq V$ deren Gewicht~$\omega(D)$ und deren Nachbarschaft~$N[D]$ definiert.
+\begin{align*}
+    \omega(D) &:= \sum_{v\in D}\omega(v) = \sum_{v\in D}|N[v]| \\
+    N[D] &:= \bigcup_{v\in D}N[v]
+\end{align*}
+
+\subsection{Reduktion auf Weighted Domination}
+Es seien $G=(V,E)$ ein Graph und $D \subseteq V$ eine Knotenmenge in $G$.
+
+\begin{Lemma}\label{lem:OmegaDomGeqV}
+    Wenn $D$ dominierend ist, dann gilt: $\omega(D) \geq |V|$.
+\end{Lemma}
+
+\begin{Proof}
+    Angenommen $\omega(D) < |V|$. Das bedeutet, dass die Anzahl der Knoten in der Nachbarschaft $N[D]$ von $D$ kleiner ist, als die Anzahl der Knoten im Graphen. Somit muss es einen Knoten geben, der nicht in $N[D]$ liegt. Also kann $D$ keine dominierende Menge sein.
+    \qed
+\end{Proof}
+
+\begin{Lemma}\label{lem:OmegaDomEqualV}
+    Ist $D$ ein efficient dominating set, dann gilt: $\omega(D) = |V|$.
+\end{Lemma}
+
+\begin{Proof}
+    Aufgrund von Lemma~\ref{lem:OmegaDomGeqV} ist $\omega(D) \geq |V|$. Es sei nun angenommen, dass $\omega(D) > |V|$ ist. Somit wird ein Knoten~$u$ für die Gewichtsfunktion mehrfach gezählt. Das bedeutet, dass $u$ in der Nachbarschaft von mehreren Knoten aus $D$ liegt. Also kann $D$ auch kein efficient dominating set sein.
+    \qed
+\end{Proof}
+
+%\paragraph{Lemma (*):} $D$ ist dominierend $\Rightarrow$ $\omega(D) \geq |V|$
+%
+%\emph{Beweis:}\nopagebreak\\
+%Angenommen, $\omega(D) < |V|$
+%\begin{align*}
+%    &\Rightarrow \sum_{v \in D}|N[v]| < |V| \\
+%    &\Rightarrow \bigcup_{v \in D}N[v] \subset V \\
+%    &\Rightarrow \text{$D$ ist nicht dominierend}
+%\end{align*}
+%\qed
+
+%\paragraph{Lemma (**):} $D$ ist PID $\Rightarrow$ $\omega(D) = |V|$
+%
+%\emph{Beweis:}\nopagebreak\\
+%Angenommen, $\omega(D) < |V|$ -- Widerspruch zu (*).
+%
+%Angenommen, $\omega(D) > |V|$
+%\begin{align*}
+%    &\Rightarrow \sum_{v \in D}|N[v]| > |V| \\
+%    &\Rightarrow \exists\, u,v \in D (u \neq v):N[u] \cap N[v] \neq \emptyset \\
+%    &\Rightarrow \text{$D$ ist nicht independent perfect}
+%\end{align*}
+%\qed
+
+%\paragraph{Reduktion:} $D$ ist PID $\Leftrightarrow$ $D$ ist mwD und $\omega(D) = |V|$
+
+\begin{Theorem}\label{theo:DEdIffOmegaEqV}
+    Eine Knotenmenge $D$ ist ein efficient dominating set genau dann, wenn $D$ ein minimum weight dominating set mit $\omega(D)=|V|$ ist.
+\end{Theorem}
+
+\begin{Proof}
+    \prR $D$ ist ein efficient dominating set. Aufgrund von Lemma~\ref{lem:OmegaDomEqualV} ist $\omega(D) = |V|$. Es sei nun angenommen, dass $D$ nicht minimal ist. Dann existiert eine dominierende Menge $D'$ mit $\omega(D') < |V|$. Dies steht im Widerspruch zu Lemma~\ref{lem:OmegaDomGeqV}.
+    
+    \prL $D$ ist eine dominierende Menge mit minimalem Gewicht, wobei $\omega(D) = |V|$ ist. Es sei nun angenommen, dass $D$ kein efficient dominating set ist. Dann gibt es zwei Knoten $u$ und $v$ in $D$ ($u,v \in D$, $u \neq v$), die einen gemeinsamen Nachbarn $w$ haben ($w \in N[u] \cap N[v]$). Somit wird $w$ für das Gesamtgewicht von $D$ mehrfach gezählt. Also ist $\omega(w) > |V|$. Dies steht im Widerspruch zur Voraussetzung.
+    \qed
+\end{Proof}
+
+%\emph{Beweis:}\nopagebreak\\
+%\prR $D$ ist PID.
+%
+%$\omega(D) = |V|$ -- Lemma (**)
+%
+%Angenommen, $D$ ist nicht minimal. Dann existiert ein $D'$ mit $\omega(D') < |V|$. -- Widerspruch zu Lemma (*)
+%
+%\prL $D$ ist mwD und $\omega(D) = |V|$.
+%
+%Angenommen, $D$ ist nicht dominierend -- Wiederspruch zur Vorraussetzung
+%
+%Angenommen, $D$ ist nicht independent perfect
+%\begin{align*}
+%    &\Rightarrow \exists\, u,v \in D (u \neq v):N[u] \cap N[v] \neq \emptyset \\
+%    &\Rightarrow |N[u]|+|N[v]| > |N[u] \cup N[v]| \\
+%    &\Rightarrow \sum_{v \in D}|N[v]| = \omega(D) > |V| \\
+%    &\text{Wiederspruch zur Vorraussetzung}
+%\end{align*}
+%\qed
+
+\subsection{Reduktion auf Weighted Independent Set}
+Es seien $G=(V,E)$ ein Graph, $N[v]$ die abgeschlossene Nachbarschaft von $v$ in $G$ und $\mI$ ein maximum weight independent set in $G^2$. 
+
+\begin{Lemma}\label{lem:NachbarschaftMaxIndSetDisjunkt}
+    Für alle Knoten $i,j\in\mI$ ($i\neq j$) gilt: $N[i] \cap N[j] = \emptyset$.
+\end{Lemma}
+
+\begin{Proof}
+    Angenommen, es existiert ein Knoten $v\in V\setminus \mI$ und zwei Knoten $i,j \in \mI$ ($i\neq j$) mit $v \in N[i]\cap N[j]$. Dann ist der Abstand von $i$ zu $j$ höchstens $2$. Somit ist $ij$ eine Kante in $G^2$. Also ist $\mI$ kein independent set in $G^2$. Dies steht im Widerspruch zur Voraussetzung. \qed
+\end{Proof}
+
+Aufgrund von Lemma~\ref{lem:NachbarschaftMaxIndSetDisjunkt} gilt nun: \[ \omega(\mI) \leq |V| \]
+
+\begin{Theorem}
+    $\mI$ ist ein efficient dominating set in $G$ genau dann, wenn $\omega(\mI)=|V|$ ist.
+\end{Theorem}
+
+\begin{Proof}
+    \prR $\mI$ ist ein efficient dominating set. Aufgrund von Lemma~\ref{lem:OmegaDomEqualV} ist $\omega(\mI) = |V|$.
+    
+    \prL $\omega(\mI) = |V|$
+
+    Angenommen, $\mI$ ist nicht dominierend in $G$. Dann existiert ein Knoten $v \in V$, für den es keinen Knoten $i \in \mI$ gibt mit $v \in N[i]$. Aufgrund von Lemma~\ref{lem:NachbarschaftMaxIndSetDisjunkt} ist somit $\omega(\mI) < |V|$.
+
+    Daraus folgt, dass $\mI$ dominierend in $G$ ist. Aufgrund von Satz~\ref{theo:DEdIffOmegaEqV} ist $\mI$ somit auch ein efficient dominating set.
+    \qed
+\end{Proof}
+
+\subsection{Zusammenfassung}
+Das oben Bewiesene lässt sich nun wie folgt zusammenfassen:
+\begin{Theorem}\label{theo:EEDiffEDiffMWDiffMWIS}
+    Gegeben seien ein Hypergraph $H$, dessen Linegraph $\mL=L(H)=(V,E)$ sowie eine Gewichtsfunktion $\omega(v\in V):=|N[v]|$, wobei $N[v]$ die abgeschlossene Nachbarschaft von $v$ in $\mL$ ist.
+    
+    Für eine Menge $M \subseteq V$ sind folgenden Aussagen äquivalent:
+    \begin{enumerate}
+        \item $M$ ist dominating induced Matching in $H$
+        \item $M$ ist efficient dominating set in $\mL$
+        \item $M$ ist minimum weight dominating set in $\mL$ mit $\omega(M) = |V|$
+        \item $M$ ist maximum weight independent set in $\mL^2$ mit $\omega(M) = |V|$
+    \end{enumerate}
+\end{Theorem}

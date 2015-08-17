@@ -1,0 +1,989 @@
+\chapter{Graphen}\label{chp:Graphen}
+
+Dieses Kapitel befasst sich mit den Grundlagen von Graphen. Es werden die in dieser Arbeit verwendeten Klassen definiert und in Verbindung gebracht. %Zusätzlich werden die Konzepte der Cliquenweite und der Potenz eines Graphen vorgestellt.
+
+\section{Grundlagen}
+Dieser Abschnitt enthält einige grundlegende Definitionen.
+
+\begin{mydef}[Graph\index{Graph}]Ein Graph $G$ ist ein 2-Tupel $G=(V,E)$. Dabei ist
+    $V$ eine endliche Menge von Knoten und $E \subseteq \{\{u,v\} \ |\ u,v \in V \wedge u \neq v\}$ die Menge der Kanten.
+
+    Eine Kante $\{u,v\}$ wird abgekürzt durch $uv$.
+\end{mydef}
+
+\begin{mydef}[Teilgraph\index{Teilgraph}\label{def:Subgraph}]
+    Es sei $T=(V_t,E_t)$ ein Graph. $T$ ist \emph{Teilgraph} des Graphen $G=(V,E)$ genau dann, wenn $V_t \subseteq V$ und $E_t \subseteq E$. Gilt für alle $u,v \in V_t$ zusätzlich $uv \in E \Rightarrow uv \in E_t$, dann ist $T$ ein \emph{induzierter Teilgraph}.
+
+    Falls $T$ ein induzierter Teilgraph von $G$ ist, so wird $T$ auch als $G[V_t]$ bezeichnet.
+\end{mydef}
+
+\begin{mydef}
+    Es seien $G$ und $F$ Graphen. $G$ ist \emph{$F$-frei} genau dann, wenn $F$ kein induzierter Teilgraph von $G$ ist.
+\end{mydef}
+
+\begin{mydef}[Nachbarschaft eines Knotens\index{Nachbarschaft}\index{$N[\cdot]$}\index{$N(\cdot)$}]
+    Gegeben sei ein Graph $G=(V,E)$. Dann seien $N(v):=\{u\ |\ uv \in E\}$ die \emph{offene}
+%    Nachbarschaft des Knotens $v$. Zusätzlich sei
+und $N[v]:=N(v) \cup \{v\}$ die \emph{abgeschlossene Nachbarschaft} von $v$.
+\end{mydef}
+
+\section{Graphisomorphie}
+Graphisomorphie bezeichnet vereinfacht gesagt, dass zwei Graphen gleich sind. Dies bedeutet bildlich gesprochen, dass man beide Graphen übereinander legen kann.
+
+\begin{mydef}[Graphisomorphie\index{Graphisomorphie}\index{$\sim$|see{Isomorphie}}\index{Isomorphie!von Graphen}\label{def:Graphisomorphie}]
+    Zwei Graphen $G_1 = (V_1,E_1)$ und $G_2 = (V_2,E_2)$ heißen \emph{isomorph} genau dann, wenn eine bijektive Abbildung $\varphi: V_1 \rightarrow V_2$ existiert, so dass für alle $u,v \in V_1$ gilt: \[ uv \in E_1 \Leftrightarrow \varphi(u)\varphi(v) \in E_2 \]
+    
+    Die Isomorphie zweier Graphen wird wie folgt dargestellt: $G_1 \sim G_2$
+\end{mydef}
+
+ 
+\section{Potenz eines Graphen}
+
+Bei der Potenzierung eines Graphen wird dessen Kantendichte erhöht. Dazu wird für $G^i$ eine Kante zwischen zwei Knoten $u$ und $v$ eingefügt, wenn der Abstand $\delta$ von $u$ und $v$ in $G$ kleiner oder gleich $i$ ist.
+
+\begin{mydef}[Potenz eines Graphen\index{Potenz eines Graphen}\index{$G^i$}]
+    Es seien $G=(V,E)$ ein Graph und $\delta$ eine Funktion, die den Abstand zweier Knoten zueinander angibt. Dann sei $G^i=(V,E^i)$ wie folgt definiert:
+    \[ E^i := \{uv \ |\ u,v \in V;\ u \neq v;\ \delta(u,v) \leq i\} \]
+\end{mydef}
+
+\begin{figure}[htbp]
+    \centering
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_GraphPower_G}]
+    {
+        \begin{tikzpicture}[thick]
+        
+            \node[nN] (m) at (0,0) {};
+            
+            \node[nN] (a) at (90:1) {};
+            \node[nN] (b) at (-30:1) {};
+            \node[nN] (c) at (210:1) {};
+            
+            \node[nN] (al) at ($(a.center)+(150:1)$) {};
+            \node[nN] (ar) at ($(a.center)+(30:1)$) {};
+            
+            \node[nN] (bl) at ($(b.center)+(30:1)$) {};
+            \node[nN] (br) at ($(b.center)+(-90:1)$) {};
+            
+            \node[nN] (cl) at ($(c.center)+(270:1)$) {};
+            \node[nN] (cr) at ($(c.center)+(150:1)$) {};
+            
+            \foreach \n in {a,b,c}
+            {
+                \draw (m) -- (\n)
+                      (\n l) -- (\n)
+                      (\n r) -- (\n);
+            }
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_GraphPower_GSquare}]
+    {
+        \begin{tikzpicture}[thick]
+        
+            \node[nN] (m) at (0,0) {};
+            
+            \node[nN] (a) at (90:1) {};
+            \node[nN] (b) at (-30:1) {};
+            \node[nN] (c) at (210:1) {};
+            
+            \node[nN] (al) at ($(a.center)+(150:1)$) {};
+            \node[nN] (ar) at ($(a.center)+(30:1)$) {};
+            
+            \node[nN] (bl) at ($(b.center)+(30:1)$) {};
+            \node[nN] (br) at ($(b.center)+(-90:1)$) {};
+            
+            \node[nN] (cl) at ($(c.center)+(270:1)$) {};
+            \node[nN] (cr) at ($(c.center)+(150:1)$) {};
+            
+            \foreach \n in {a,b,c}
+            {
+                \draw[gray] (m) -- (\n)
+                      (\n l) -- (\n)
+                      (\n r) -- (\n);
+                      
+                \draw (m) -- (\n l)
+                      (m) -- (\n r)
+                      (\n l) -- (\n r);
+            }
+            
+            \draw (a) -- (b) -- (c) -- (a);
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \caption[Beispiel für die Potenz eines Graphen]{Beispiel für die Potenz eines Graphen: der Graph~\subref{pic:bsp_GraphPower_G} und dessen Quadrat~\subref{pic:bsp_GraphPower_GSquare}.}
+    \label{pic:bsp_GraphPower}
+\end{figure}
+
+
+\section{Spezielle Graphen}
+Bei den drei in diesem Abschnitt definierten Graphen handelt sich um individuelle Graphen. Die Abbildung~\ref{pic:bsp_HouseDominoGem} stellt alle drei dar.
+
+\begin{mydef}[House\index{House}]
+    Ein \emph{House} ist ein Graph $(V,E)$, der wie folgt definiert ist (Index Arithmetik modulo k):
+    \begin{align*}
+        V &=\{u,v_0,\ldots,v_3\} \\
+        E &=\{v_iv_{i+1}\ | \ 0 \leq i \leq 3 \} \cup \{uv_1,uv_2\}
+    \end{align*}
+\end{mydef}
+
+\begin{mydef}[Domino\index{Domino}]
+    Ein \emph{Domino} ist ein Graph $(V,E)$, der wie folgt definiert ist:
+    \begin{align*}
+        V &=\{u_i,v_i \ |\ 1 \leq i \leq 3 \} \\
+        E &=\{v_iv_{i+1} \ | \ 1 \leq i \leq 2 \} \cup \{u_iv_i \ | \ 1 \leq i \leq 3 \}
+    \end{align*}
+\end{mydef}
+
+\begin{mydef}[Gem\index{Gem}]
+    Ein \emph{Gem} ist ein Graph $(V,E)$, der wie folgt definiert ist:
+    \begin{align*}
+        V &=\{u,v_1,\ldots,v_4\} \text{ mit } \\
+        E &=\{v_iv_{i+1}\ | \ 1 \leq i \leq 3 \} \cup \{uv_i \ | \ 1 \leq i \leq 4 \}
+    \end{align*}
+\end{mydef}
+
+\floatimage{pic:bsp_HouseDominoGem}{Die Graphen House, Domino und Gem.}{
+\hspace*{\fill}
+\subfloat[House]{\begin{tikzpicture}
+  [thick,node distance=.5cm]
+
+  \foreach \x/\y in {45/a,135/b,225/c,315/d} {
+     \node[nN] (\y) at (\x:0.75cm) {};
+  }
+ 
+  \node[nN] (e) at ($(45:0.75cm)+(120:1.06066cm)$) {};
+  
+  \foreach \x/\y in {a/b,b/c,c/d,d/a,a/e,b/e} {
+      \draw (\x) -- (\y);
+  }
+  
+ %\foreach \x in {45,135,-45,-135} {
+ %    \node at (\x:1.1cm) {};
+ %}
+ 
+  \node[hN] at (-1.125,0) {};
+  \node[hN] at (1.25,0) {};
+
+\end{tikzpicture}}
+\hspace*{\fill}
+\subfloat[Domino]{\begin{tikzpicture}
+  [thick,node distance=1.06066cm]
+
+  \foreach \y in {1,2}
+  {
+  \foreach \x in {1,2,3}
+  {
+    \node[nN] (v\x\y) at (${\x-2}*(1.06066cm,0)+\y*(0,1.06066cm)$) {};
+  }
+  }
+ 
+  \foreach \x in {1,2,3}
+  {
+    \draw (v\x1) -- (v\x2);
+  }
+  
+  \foreach \x/\y in {1/2,2/3}
+  {
+    \draw (v\x1) -- (v\y1);
+    \draw (v\x2) -- (v\y2);
+  }
+ 
+  %\foreach \x/\y in {a/b,b/c,c/d,d/a,a/c} {
+  %    \draw (\x) -- (\y);
+  %}
+
+  %\foreach \x in {45,135,-45,-135} {
+  %   \node at (\x:1.1cm) {};
+  %}
+ 
+ 
+  %\node[hN] at (-1.125,0) {};
+  %\node[hN] at (1.25,0) {};
+  
+\end{tikzpicture}}
+\hspace*{\fill}
+\subfloat[Gem]{\begin{tikzpicture}
+  [thick,node distance=.5cm]
+
+        \def\len{1.25}
+        
+        \node[nN] (a) at (150:\len) {};
+        \node[nN] (b) at (110:\len) {};
+        \node[nN] (c) at (70:\len) {};
+        \node[nN] (d) at (30:\len) {};
+        \node[nN] (e) at (0,0) {};
+
+
+  %\node[hN] at (-1.125,0) {};
+  %\node[hN] at (1.25,0) {};
+
+%  \node[nN] (a) at (-0.905,0) {};
+%  \node[nN] (d) at  (0.905,0) {};
+%  \node[nN] (b) [above right=of a] {};
+%  \node[nN] (c) [above left=of d] {};
+%  
+%  \node[nN] (e) at (-90:0.65cm) {};
+        
+ %\foreach \x/\y in {0/a,60/b,120/c,180/d,-90/e} {
+ %    \node[nN] (\y) at (\x:0.75cm) {};
+ %}
+ 
+ \foreach \x/\y in {a/b,b/c,c/d} {
+     \draw (\x) -- (\y);
+ }
+
+ \foreach \x in {a,b,c,d} {
+     \draw (\x) -- (e);
+ }
+
+ %\foreach \x in {45,135,-45,-135} {
+ %    \node at (\x:1.1cm) {};
+ %}
+  
+\end{tikzpicture}}
+\hspace*{\fill}
+}
+
+
+\section{Einfache Klassen}
+Die Klassen in diesem Abschnitt sind sehr einfache Klassen. Graphen innerhalb dieser Klassen unterscheiden sich lediglich durch ihre Größe voneinander. Die Abbildungen~\ref{pic:bsp_WCK} und \ref{pic:bsp_Sun} zeigen für jede Klasse einen Beispielgraphen der Größe~5.
+
+\begin{mydef}[Kreis\index{Kreis}, $C_k$\index{$C_k$}]
+    Ein \emph{sehnenloser Kreis} (engl. chordless cycle) der Länge $k$ ($k\geq 3$) ist ein Graph mit $k$ Knoten $v_1, \ldots, v_k$ und den Kanten $v_iv_{i+1}, 1 \leq i \leq k$ und $v_kv_1$.
+
+    Kreise der Länge $k\geq 5$ werden auch als \emph{Hole}\index{Hole}\index{Hole|see{Kreis}} bezeichnet.
+\end{mydef}
+
+%\begin{mydef}[Rad\index{Rad}, $W_k$\index{$W_k$}]
+%    Gegeben sei ein $C_k=(V_c,E_c)$. Ein Rad-Graph (engl. wheel graph) $W_k=(V_w,E_w)$ der Größe $k$ sei dann wie folgt definiert:
+%    \begin{align*}
+%        V_w&:=V_c \cup \{v\} \text{ mit }v \notin V_c \\
+%        E_w&:=E_c \cup \{uv \ |\ u \in V_c\}
+%    \end{align*}
+% %\begin{itemize}
+% %  \item $V_w:=V_c \cup \{v\}$ mit $v \notin V_c$
+% %  \item $E_w:=E_c \cup \{uv \ |\ u \in V_c\}$
+% %\end{itemize}
+%\end{mydef}
+
+\begin{mydef}[Clique\index{Clique}, $K_i$\index{$K_i$}]
+    Ein Graph $G=(V,E)$ ist eine Clique der Größe~$i$ genau dann, wenn $|V|=i$ und $E=\{uv \ |\ u,v \in V \wedge u \neq v\}$.
+\end{mydef}
+
+Man bezeichnet Cliquen auch als vollständige Graphen. Das Ermitteln einer größten Clique in einem Graphen (also eines größten Teilgraphen, der eine Clique darstellt) ist NP-vollständig \cite{Karp72}.
+
+\begin{figure}[htb]
+    \centering
+\hspace*{\fill}
+\subfloat[Ein Kreis der Länge 5 ($C_5$)]{\begin{tikzpicture}
+  [thick]
+
+  \foreach \x/\y in {18/a,90/b,162/c,234/d,306/e} {
+     \node[nN] (\y) at (\x:0.75cm) {};
+  }
+ 
+  \foreach \x/\y in {a/b,b/c,c/d,d/e,e/a} {
+      \draw (\x) -- (\y);
+  }
+
+  \foreach \x in {45,135,-45,-135} {
+     \node at (\x:1.1cm) {};
+  }
+ 
+ 
+  \node[hN] at (-1.125,0) {};
+  \node[hN] at (1.25,0) {};
+  
+\end{tikzpicture}}
+\hspace*{\fill}
+%\subfloat[Ein Rad der Größe 5 ($W_5$)]{\begin{tikzpicture}
+%  [thick,node distance=.5cm]
+%
+%  \foreach \x/\y in {18/a,90/b,162/c,234/d,306/e} {
+%     \node[nN] (\y) at (\x:0.75cm) {};
+%  }
+% 
+%  \node[nN] (center) at (0,0) {};
+%  
+%  \foreach \x/\y in {a/b,b/c,c/d,d/e,e/a} {
+%      \draw (\x) -- (\y);
+%      \draw (\x) -- (center);
+%  }
+%  
+% \foreach \x in {45,135,-45,-135} {
+%     \node at (\x:1.1cm) {};
+% }
+% 
+%  \node[hN] at (-1.125,0) {};
+%  \node[hN] at (1.25,0) {};
+%
+%\end{tikzpicture}}
+%\hspace*{\fill}
+\subfloat[Eine Clique der Größe 5 ($K_5$)]{\begin{tikzpicture}
+  [thick]
+
+  \node[hN] at (-1.125,0) {};
+  \node[hN] at (1.25,0) {};
+      
+  \foreach \x/\y in {18/a,90/b,162/c,234/d,306/e} {
+     \node[nN] (\y) at (\x:0.75cm) {};
+  }
+ 
+ \foreach \x/\y in {a/b,a/c,a/d,a/e,
+                 b/c,b/d,b/e,
+                 c/d,c/e,
+                 d/e} {
+     \draw (\x) -- (\y);
+ }
+
+ \foreach \x in {45,135,-45,-135} {
+     \node at (\x:1.1cm) {};
+ }
+  
+\end{tikzpicture}}
+\hspace*{\fill}
+\caption{Die Graphen $C_5$ und $K_5$.}
+\label{pic:bsp_WCK}
+\end{figure}
+
+\begin{mydef}[Sun\index{Sun}, $S_k$\index{$S_k$}]
+    Gegeben seien die Knoten $V_u=\{u_0,\ldots,u_{k-1}\}$ und $V_v=\{v_0,\ldots,v_{k-1}\}$. Eine \emph{complete Sun} $S_k=(V_s,E_s)$ der Größe $k$ ($k\geq 3$) sei dann wie folgt definiert (Index Arithmetik modulo $k$):
+    \begin{align*}
+        V_s&:=V_u \cup V_v \\
+        E_s&:=\{u_iv_i,u_iv_{i+1},v_iv_j \ |\ 0\leq i,j<k ;\ i \neq j \}
+    \end{align*}
+\end{mydef}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+  [thick]
+
+  \foreach \x/\y in {18/a,90/b,162/c,234/d,306/e} {
+     \node[nN] (\y) at (\x:0.75cm) {};
+  }
+ 
+  \foreach \x/\y in {54/a,126/b,198/c,270/d,342/e} {
+     \node[nN] (\y\y) at (\x:1.2135cm) {};
+  }
+ 
+ \foreach \x/\y in {a/b,a/c,a/d,a/e,
+                 b/c,b/d,b/e,
+                 c/d,c/e,
+                 d/e} {
+     \draw (\x) -- (\y);
+ }
+
+ \foreach \x/\y in {a/b,b/c,c/d,d/e,e/a} {
+     \draw (\x) -- (\x\x);
+     \draw (\x\x) -- (\y);
+ }
+
+\end{tikzpicture}
+\caption{Der Graph $S_5$}
+\label{pic:bsp_Sun}
+\end{figure}
+
+\section{Chordale Graphen}\label{sec:chordalGraphs}
+Unter chordalen Graphen versteht man Graphen, die keine Kreise der Größe~$4$ oder größer als induzierte Teilgraphen besitzen. 
+Man bezeichnet sie in der (engl.) Literatur auch als \emph{triangulated graphs}, \emph{rigid-circuit graphs}, \emph{monotone transitive graphs} und \emph{perfect elemination graphs} \cite{brandstaedt1999graph}.
+
+\begin{mydef}[chordaler Graph\index{chordal}]
+    Ein Graph $G$ ist \emph{chordal} genau dann, wenn er $C_k$-frei ($k\geq4$) ist.
+\end{mydef}
+
+Chordale Graphen besitzen einige hilfreiche Eigenschaften. Beispielsweise lassen sich einige NP-vollständige Probleme bei chordalen Graphen in Polynomial- oder gar Linearzeit lösen.
+
+\subsection{Perfekte Eliminationsordnungen}
+Bei einer \emph{perfekten Eliminationsordnung} handelt es sich um eine spezielle Knotenreihenfolge. Dazu ist es jedoch nötig, \emph{simpliziale Knoten} zu definieren.
+
+\begin{mydef}[simplizialer Knoten\index{simplizial}]
+    Ein Knoten $v$ im Graphen $G$ ist \emph{simplizial} genau dann, wenn $N(v)$ eine Clique in $G$ ist.
+\end{mydef}
+
+Jeder nichtleere, chordale Graph $G$ besitzt einen simplizialen Knoten; ist $G$ keine Clique, so gibt es sogar zwei simpliziale Knoten in $G$, die nicht miteinander verbunden sind \cite{Dirac1961}. Es ist somit möglich, die Knoten eines chordalen Graphen schrittweise zu eliminieren, indem man vom verbleibenden Graphen einen simplizialen Knoten entfernt. Diese Knotenreihenfolge wird als \emph{perfekte Eliminationsordnung} bezeichnet.
+
+\begin{mydef}[perfekte Eliminationsordnung\index{Eliminationsordnung!perfekte}]
+    Gegeben sei ein Graph $G=(V,E)$ mit $|V|=n$. Eine Folge $(v_1,\ldots,v_n)$ von Knoten ist eine \emph{perfekte Eliminationsordnung} für $G$ genau dann, wenn für alle $i\in\{1,\ldots,n\}$ gilt: $v_i$ ist simplizial in $G[\{v_i,\ldots,v_n\}]$.
+\end{mydef}
+
+\begin{Theorem}\cite{Dirac1961}
+    Ein Graph $G$ ist chordal\index{chordal} genau dann, wenn $G$ eine perfekte Eliminationsordnung\index{Eliminationsordnung!perfekte} besitzt.
+\end{Theorem}
+
+Es ist in Linearzeit möglich, die Chordalität eines Graph zu erkennen und eine perfekte Eliminationsordnung zu bilden, falls er chordal ist \cite{Rose1976}.
+
+\subsection{Strongly chordale Graphen\index{strongly chordal}}
+Eine (echte) Teilmenge der chordalen Graphen sind die strongly chordalen Graphen. Es gibt verschiedene (äquivalente) Definitionen für sie. Eine davon ist über das Verbot von Suns als induzierte Teilgraphen.
+
+\begin{mydef}[strongly chordaler Graph\index{chordal!strongly}\index{strongly chordal}]
+    Ein Graph $G$ ist \emph{strongly chordal} genau dann, wenn $G$ chordal und $S_k$-frei ($k\geq 3$) ist.
+\end{mydef}
+
+Strongly chordale Graphen besitzen als chordale Graphen eine perfekte Eliminationsordnung. Es gibt allerdings auch andere Eliminationsordnungen für strongly chordale Graphen. Eine davon wird als \emph{strong perfect elemination ordering} bezeichnet.
+
+\begin{mydef}[strong perfect elimination ordering\index{Eliminationsordnung!strong (perfect)}, \cite{Faber1983}]\label{def:strongPerfectEO}
+    Eine perfekte Eliminationsordnung $(v_1,\ldots,v_n)$ eines Graphen $G=(V,E)$ ist \emph{strong perfect} genau dann, wenn für alle $i<j,k<l$ gilt:
+    %\[ v_iv_l \in E \land v_iv_k \in E \land v_kv_j \in E \Rightarrow v_lv_j \in E \]
+    \[ \{v_iv_l, v_iv_k, v_jv_k \} \subseteq E \Rightarrow v_lv_j \in E \]
+\end{mydef}
+
+\begin{figure}[htb]
+\centering
+        \begin{tikzpicture}
+           [thick,lbl/.style={font=\small},llbl/.style={left,lbl},rlbl/.style={lbl,right}]
+           
+           \node[nN] (i) at (180:1.5cm) {}; \node[llbl] at (i.west) {$i$};
+           \node[nN] (j) at (120:1.5cm) {}; \node[llbl] at (j.west) {$j$};
+           \node[nN] (k) at (60:1.5cm)  {}; \node[rlbl] at (k.east) {$k$};
+           \node[nN] (l) at (0:1.5cm)   {}; \node[rlbl] at (l.east) {$l$};
+           
+           \begin{pgfonlayer}{background}
+               \draw[dashed]
+                   (i) -- (j)
+                   (k) -- (l);
+
+               \draw[very thick,clDark25Green]
+                   (i.center) -- (l.center)
+                   (i.center) -- (k.center)
+                   (j.center) -- (k.center);
+           
+               \draw[very thick,clBlue,decoration={snake,amplitude=1},decorate] (j) -- (l);
+            
+           \end{pgfonlayer}
+        \end{tikzpicture}
+\caption[Skizze für Definition \ref{def:strongPerfectEO}]
+    {Skizze für Definition \ref{def:strongPerfectEO}.  Wenn die Kanten $il$, $ik$ und $jk$ (grün) vorhanden sind, muss auch die Kante $jl$ (blau gewellt) vorhanden sein. Über die Kanten $ij$ und $kl$ (gestrichelt) wird keine Aussage gemacht.}
+\label{pic:SkizzeBeweisStrPerfEO}
+\end{figure}
+
+Eine strong perfect elimination ordering lässt sich mit einem Zeitaufwand von $\mO(n^3)$ für einen gegebenen strongly chordalen Graphen finden \cite{Anstee1984}.
+
+Eine weitere Eliminationsordnung ist die \emph{simple Eliminationsordnung}. Dabei müssen die entfernten Knoten sogenannte \emph{simple Knoten} sein.
+
+\begin{mydef}[simpler Knoten\index{simple}, \cite{Faber1983}]\label{def:simpleNode}
+    Ein Knoten $v$ ist ein \emph{simpler Knoten} im Graphen $G$ genau dann, wenn für alle seine Nachbarn $x,y\in N[v]$ gilt:
+    \[ N[x] \subseteq N[y] \text{ oder } N[y] \subseteq N[x] \]
+\end{mydef}
+
+Aus Definition \ref{def:simpleNode} folgt, dass es für die Nachbarn $u_1,\ldots,u_i$ eines simplen Knotens $v$ eine lineare Ordnung auf deren Nachbarschaft gibt: \[ N[u_1] \subseteq \ldots \subseteq N[u_i] \]
+
+\begin{mydef}[simple Eliminationsordnung\index{Eliminationsordnung!simple}, \cite{Faber1983}]\label{def:simpleEO}
+    Eine Eliminationsordnung $v_1,\ldots,v_n$ ist eine \emph{simple Eliminationsordnung} genau dann, wenn für alle $i \in \{1, \ldots, n\}$ gilt: $v_i$ ist simpel in $G[\{v_i,\ldots,v_n\}]$.
+\end{mydef}
+
+\begin{Lemma}\label{lem:StrCordSimplNode}
+    \cite{Faber1983} Ein Graph $G$ ist strongly chordal\index{chordal!strongly}\index{strongly chordal} genau dann, wenn jeder induzierte Teilgraph von $G$ einen simplen\index{simple} Knoten besitzt.
+\end{Lemma}
+
+Aus Lemma~\ref{lem:StrCordSimplNode} folgt nun unmittelbar Satz \ref{theo:StrCordSimplEO}:
+
+\begin{Theorem}\label{theo:StrCordSimplEO}
+    Ein Graph $G$ ist strongly chordal\index{chordal!strongly}\index{strongly chordal} genau dann, wenn $G$ eine simple Eliminationsordnung\index{Eliminationsordnung!simple} hat.
+\end{Theorem}
+
+\subsection{Intervallgraphen}
+
+ Die Idee bei Intervallgraphen ist es, die Überschneidung von verschiedenen Zeitintervallen darzustellen. Dazu wird für jedes Intervall ein Knoten erstellt und diese dann miteinander verbunden, wenn sich die entsprechenden Intervalle überschneiden. Abbildung~\ref{pic:bsp_Interval} zeigt dies an einem Beispiel.
+
+\begin{mydef}[Intervallgraph\index{Intervallgraph}]
+    Ein Graph $G=(V,E)$ ist ein Intervallgraph genau dann, wenn eine Menge von Intervallen $\mI =\{I_1,\ldots,I_n\}$ existiert, sodass gilt:
+    \begin{align*}
+        V &= \{v_1, \ldots, v_n\} \\
+        E &= \{v_iv_j \ |\ I_i \cap I_j \neq \emptyset ;\ i \neq j \}
+    \end{align*}
+\end{mydef}
+
+\begin{figure}[htbp]
+    \centering
+    \subfloat[\label{pic:bsp_Interval_Int}]{
+    \begin{tikzpicture}
+        \foreach \n/\f/\t/\h/\c in {a/1/7/2/clOrange,
+                                    b/2/4/3/clViolet,
+                                    c/3/15/1/clRed,
+                                    d/6/14/3/clBlue,
+                                    e/9/11/2/clAqua,
+                                    f/13/18/2/clGreen,
+                                    g/17/19/1/black}
+        {
+            \draw[very thick,\c] ($0.5*(\f,\h)$) -- ($0.5*(\t,\h)$)
+                              ($0.5*(\f,\h)+0.5*(0,0.18)$) -- ($0.5*(\f,\h)-0.5*(0,0.18)$)
+                              ($0.5*(\t,\h)+0.5*(0,0.18)$) -- ($0.5*(\t,\h)-0.5*(0,0.18)$);
+            \node[llbl] at ($0.5*(\f,\h)$) {\n};
+        }
+    \end{tikzpicture}
+    }
+    
+    \subfloat[\label{pic:bsp_Interval_Graph}]{
+    \begin{tikzpicture}[thick]
+    
+        \node[nN,fill=clOrange] (a) at (120:2) {};
+        \node[nN,fill=clViolet] (b) at (180:2) {};
+        \node[nN,fill=clRed] (c) at (0,0) {};
+        \node[nN,fill=clBlue] (d) at (60:2) {};
+        \node[nN,fill=clAqua] (e) at (30:1.1547) {};
+        \node[nN,fill=clGreen] (f) at (0:2) {};
+        \node[nN,fill=black] (g) at ($(f.center)+(30:1.1547)$) {};
+        
+%        \foreach \n/\f/\t/\h/\c in {a/2/7/3/clOrange,
+%                                    b/2/4/1/clViolet,
+%                                    c/3/10/1/clRed,
+%                                    d/4/13/3/clBlue,
+%                                    e/8/9/2/clAqua,
+%                                    f/8/13/1/clGreen,
+%                                    g/12/14/2/black}
+%        {
+%            \node[nN,fill=\c] (\n) at ($0.25*(\f,0) + 0.25*(\t,0) + (0,\h)$) {};
+%        }
+        
+        \node[llbl] at (a.west) {a};
+        \node[blbl] at (b.south) {b};
+        \node[blbl] at (c.south) {c};
+        \node[rlbl] at (d.east) {d};
+        \node[blbl] at (e.south) {e};
+        \node[blbl] at (f.south) {f};
+        \node[blbl] at (g.south) {g};
+            
+        \foreach \f/\t in {a/b,a/c,a/d,b/c,c/d,c/e,c/f,d/e,d/f,f/g}
+        {
+            \draw (\f)--(\t);
+        }
+    \end{tikzpicture}
+    }
+    
+    \caption[Eine Mengen von Intervallen und der dazugehörige Intervallgraph]
+    {Eine Mengen von Intervallen \subref{pic:bsp_Interval_Int} und der dazugehörige Intervallgraph \subref{pic:bsp_Interval_Graph} (Vorlage:~\cite{wikiMedia:IntervalGraph})}
+    \label{pic:bsp_Interval}
+\end{figure}
+
+Intervallgraphen sind strongly chordal \cite[Abschnitt~4.4]{brandstaedt1999graph}\cite{FarberPhD} und können in Linearzeit erkannt werden \cite{Booth1976}.
+
+\section{Distanzerbliche Graphen}
+Bei distanzerblichen Graphen handelt es sich um eine Klasse von Graphen, in denen der Abstand zwischen zwei Knoten in jedem zusammenhängenden induzierten Teilgraph gleich ist. Das heißt, dass (so lange es einen Pfad gibt) sich die Entfernung zwischen zwei Knoten nicht verändert, unabhängig davon, wie viele Knoten entfernt werden.
+
+Ursprünglich wurden distanzerbliche Graphen in \cite{Howorka1977} vorgestellt. In \cite{Bandelt1986} wurde gezeigt, dass sie sich auch über das Verbot von Teilgraphen definieren lassen. Dabei handelt es sich um die Graphen House, Hole ($C_k$, $k\geq 5$), Domino und Gem.
+
+\begin{mydef}[distanzerblicher Graph\index{distanzerblich}, \cite{Bandelt1986}]
+    Ein Graph $G$ ist \emph{distanzerblich} (engl.: distance hereditary) genau dann, wenn $G$ (House, Hole, Domino, Gem)-frei ist.
+\end{mydef}
+
+\begin{figure}[htbp]
+    \centering
+    
+    \begin{tikzpicture}
+        [thick]
+        
+        \node[nN] (a) at (150:1.5) {};
+        \node[nN] (b) at (210:1.5) {};
+        \node[nN] (c) at ($(210:1.5)+(-90:1.5)$) {};
+        \node[nN] (d) at (90:1.5) {};
+        \node[nN] (e) at (0,0) {};
+        \node[nN] (f) at (-90:1.5) {};
+        \node[nN] (g) at (30:1.5) {};
+        \node[nN] (h) at (-30:1.5) {};
+        \node[nN] (i) at ($2*(30:1.5)$) {};
+        \node[nN] (j) at ($(30:1.5)+(-30:1.5)$) {};
+        
+        \draw (a) -- (d)
+              (a) -- (e)
+              (a) -- (f);
+        
+        \draw (b) -- (c)
+              (b) -- (d)
+              (b) -- (e)
+              (b) -- (f);
+        
+        \draw (d) -- (g)
+              (d) -- (h);
+        
+        \draw (e) -- (g)
+              (e) -- (h);
+
+        \draw (f) -- (g)
+              (f) -- (h);
+        
+        \draw (g) -- (h)
+              (g) -- (i)
+              (g) -- (j);
+        
+        \draw (i) -- (j);
+
+    \end{tikzpicture}
+    
+    \caption[Beispiel für einen distanzerblichen Graphen]{Beispiel für einen distanzerblichen Graphen (Vorlage: \cite{wikiMedia:DistanceHereditaryGraph})}
+    \label{pic:bsp_DistanceHereditaryGraph}
+\end{figure}
+
+
+Zwar sind Holes (Kreise der Länge~5 oder größer) verboten, aber nicht Kreise der Länge~4. Somit sind distanzerbliche Graphen nicht notwendigerweise chordal. Umgekehrt beinhalten chordale Graphen bereits per Definition kein House, Hole oder Domino als induzierten Teilgraphen. Es gilt somit Lemma~\ref{lem:GemFreeChordalDistanzerblich}.
+
+\begin{Lemma}\label{lem:GemFreeChordalDistanzerblich}
+    Ein chordaler\index{chordal} Graph $G$ ist Gem-frei $\Rightarrow$ $G$ ist distanzerblich\index{distanzerblich}.
+\end{Lemma}
+
+Da jede Sun ein Gem enthält, ist ein chordaler distanzerblicher Graph auch immer strongly chordal.
+
+\section{Dually chordale Graphen}\label{sec:DuallyChordalGraphs}
+
+Bei dually chordalen Graphen handelt es sich um eine Graphenklasse, die sich über eine Nachbarschaftsordnung ihrer Knoten definiert. Basis dafür ist ein sogenannter maximaler Nachbar.
+
+\begin{mydef}[maximaler Nachbar\index{Nachbar!maximal}]
+    Ein Knoten $u\in N[v]$ ist ein \emph{maximaler Nachbar} von $v$ genau dann, wenn gilt:
+    \[ \forall\,w \in N[v]: N[w] \subseteq N[u] \]
+    \end{mydef}
+
+Kann nun ein Graph $G$ schrittweise reduziert werden, wobei jeder entfernte Knoten $v$ einen maximalen Nachbarn $u$ im Restgraphen hat, spricht man von einer maximalen Nachbarschaftsordnung. Dies schließt auch die Möglichkeit ein, dass $v$ sein eigener maximaler Nachbar ist ($v=u$).
+
+\begin{mydef}[maximale Nachbarschaftsordnung\index{Nachbarschaftsordnung!maximal}]
+    Eine Ordnung von Knoten $(v_1,\ldots,v_n)$ ist eine \emph{maximale Nachbarschaftsordnung} genau dann, wenn für alle $i\in\{1,\ldots,n\}$ jeder Knoten $v_i$ einen maximalen Nachbar in $G[\{v_i,\ldots,v_n\}]$ hat.
+\end{mydef}
+
+Dually chordale Graphen definieren sich nun durch eine maximale Nachbarschaftsordnung.
+
+\begin{mydef}[dually chordaler Graph\index{dually chordal}\index{chordal!dually}\label{def:duallyChordal}]
+    Ein Graph $G$ ist \emph{dually chordal} genau dann, wenn $G$ eine maximale Nachbarschaftsordnung hat.
+\end{mydef}
+
+Im Laufe der Arbeit werden noch weitere Charakterisierungen für dually chordale Graphen genannt. Satz~\ref{theo:duallyChordalChar} (S.~\pageref{theo:duallyChordalChar}) fasst diese zusammen.
+
+Jeder Graph $G$ lässt sich in einen dually chordalen Graphen $G'$ umwandeln, indem man einen Knoten $v$ einfügt, wobei $v$ mit allen Knoten in $G$ benachbart ist. Auf diese Weise ist $v$ ein maximaler Nachbar für alle anderen Knoten. Als Folge daraus kann ein dually chordaler Graph jeden Graphen als Teilgraphen haben. Somit sind dually chordale Graphen nicht notwendigerweise chordal.
+
+Man kann die Definition der dually chordalen Graphen erweitern, indem auch jeder induzierte Teilgraph dually chordal sein muss. Die so entstehende Klasse nennt man \emph{hereditary dually chordal}.
+
+\begin{Theorem}\cite{duallyChordal}\label{theo:hereDuCh_strCh}
+    Ein Graph $G$ ist strongly chordal\index{chordal!strongly}\index{strongly chordal} genau dann, wenn jeder induzierte Teilgraph von $G$ dually chordal\index{chordal!dually}\index{dually chordal} ist.
+\end{Theorem}
+
+Zwar sind die strongly chordalen Graphen eine Teilmenge der dually chordalen Graphen, aber nicht jeder Graph, der chordal und dually chordal ist, ist auch strongly chordal. Abbildung~\ref{pic:bsp_chDuCh_notStrCh} stellt einen solchen Graphen dar.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        [thick]
+        
+        \node[nN] (m) at (0,0) {};
+        
+        \node [nN] (b) at ($(m.center)+(150:0.866025)$) {};
+        \node [nN] (c) at ($(b.center)+(0:1.5)$) {};
+        \node [nN] (e) at ($(b.center)+(-60:1.5)$) {};
+        
+        
+        \node [nN] (a) at ($(b.center)+(60:1.5)$) {};
+        \node [nN] (d) at ($(b.center)-(60:1.5)$) {};
+        \node [nN] (f) at ($(c.center)+(-60:1.5)$) {};
+
+        \draw (a)--(b)--(d)--(e)--(b)--(c)--(e)--(f)--(c)--(a);
+        
+        \foreach \n in {a,b,c,d,e,f}
+        {
+            \draw[] (m) -- (\n);
+        }
+        
+    \end{tikzpicture}
+    \caption{Ein Graph der chordal, dually chordal jedoch nicht strongly chordal ist.}
+    \label{pic:bsp_chDuCh_notStrCh}
+\end{figure}
+
+
+\section{Bäume}
+Bäume sind eine der bekanntesten Graphenklassen. Bei ihnen handelt es sich um zusammenhängende Graphen ohne Zyklen ($C_k$, $k\geq 3$). Nicht zusammenhängende Graphen, die frei von Zyklen sind, werden als Wald bezeichnet.
+
+\begin{mydef}[Baum\index{Baum}]
+    Ein zusammenhängender Graph ist ein Baum genau dann, wenn er keinen Zyklus besitzt.
+\end{mydef}
+
+Es gibt noch weitere Charakterisierungen für Bäume: Beispielsweise ist ein Graph $(V,E)$ ein Baum genau dann, wenn er zusammenhängend ist und $|V| = |E|+1$ ist.
+
+%Es ist möglich, jeden Baum wie folgt zu konstruieren: Man startet mit einem einzelnen Knoten. Ist bereits ein Baum $T=(V,E)$ vorhanden, so fügt man einen neuen Knoten $v$ hinzu sowie genau eine Kante $uv$ ($u\in V$).
+
+\subsection{Spannbäume}
+Eine Anwendung von Bäumen ist das Konzept der Spannbäume. Hierbei handelt es sich um einen Baum~$T$, der ein (in der Regel nicht induzierter) Teilgraph eines Graphen~$G$ ist. Allerdings ist jeder Knoten von $G$ auch in $T$ vorhanden.
+
+\begin{mydef}[Spannbaum\index{Spannbaum}]
+    Gegeben sei ein zusammenhängender Graph $G=(V_g,E_g)$ und ein Baum $T=(V_t,E_t)$. $T$ ist ein \emph{Spannbaum} von $G$ genau dann, wenn die beiden nachfolgenden Bedingungen erfüllt sind:
+    \begin{align*}
+       V_t &= V_g \\
+       E_t &\subseteq E_g
+    \end{align*}
+\end{mydef}
+
+Es ist leicht zu sehen, dass jeder zusammenhängende Graph auch einen Spannbaum besitzt. Dieser muss jedoch nicht eindeutig sein. Abbildung~\ref{pic:bsp_SpanningTree} stellt einen Graphen mit einem Spannbaum dar.
+
+\begin{figure}[htbp]
+    \centering
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_SpanningTree_Graph}]{
+    \begin{tikzpicture}
+        [thick]
+        
+        \def\len{1.25}
+        \node[nN] (a) at (150:\len) {};
+        \node[nN] (b) at (210:\len) {};
+        \node[nN] (c) at ($(210:\len)+(-90:\len)$) {};
+        \node[nN] (d) at (90:\len) {};
+        \node[nN] (e) at (0,0) {};
+        \node[nN] (f) at (-90:\len) {};
+        \node[nN] (g) at (30:\len) {};
+        \node[nN] (h) at (-30:\len) {};
+        \node[nN] (i) at ($2*(30:\len)$) {};
+        \node[nN] (j) at ($(30:\len)+(-30:\len)$) {};
+        
+        \draw (a) -- (d)
+              (a) -- (e)
+              (a) -- (f);
+        
+        \draw (b) -- (c)
+              (b) -- (d)
+              (b) -- (e)
+              (b) -- (f);
+        
+        \draw (d) -- (g)
+              (d) -- (h);
+        
+        \draw (e) -- (g)
+              (e) -- (h);
+
+        \draw (f) -- (g)
+              (f) -- (h);
+        
+        \draw (g) -- (h)
+              (g) -- (i)
+              (g) -- (j);
+        
+        \draw (i) -- (j);
+
+    \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_SpanningTree_Tree}]{
+    \begin{tikzpicture}
+        [thick]
+        
+        \def\len{1.25}
+
+        \node[nN] (a) at (150:\len) {};
+        \node[nN] (b) at (210:\len) {};
+        \node[nN] (c) at ($(210:\len)+(-90:\len)$) {};
+        \node[nN] (d) at (90:\len) {};
+        \node[nN] (e) at (0,0) {};
+        \node[nN] (f) at (-90:\len) {};
+        \node[nN] (g) at (30:\len) {};
+        \node[nN] (h) at (-30:\len) {};
+        \node[nN] (i) at ($2*(30:\len)$) {};
+        \node[nN] (j) at ($(30:\len)+(-30:\len)$) {};
+        
+        \draw[lightgray]
+            (a) -- (d)
+            (a) -- (f)
+            (b) -- (d)
+            (d) -- (h)
+            (f) -- (g)
+            (f) -- (h)
+            (g) -- (h)
+            (i) -- (j);
+
+        \draw
+            (a) -- (e)
+            (b) -- (c)
+            (b) -- (e)
+            (b) -- (f)
+            (d) -- (g)
+            (e) -- (g)
+            (e) -- (h)
+            (g) -- (i)
+            (g) -- (j);
+
+    \end{tikzpicture}
+    }
+    \hspace*{\fill}
+
+    \caption[Beispiel für einen Graphen und einen Spannbaum]{Beispiel für einen Graphen~\subref{pic:bsp_SpanningTree_Graph} und einen Spannbaum~\subref{pic:bsp_SpanningTree_Tree} \\ (Vorlage für \subref{pic:bsp_SpanningTree_Graph}: \cite{wikiMedia:DistanceHereditaryGraph})}
+    \label{pic:bsp_SpanningTree}
+\end{figure}
+
+Spannbäume bieten eine weitere Möglichkeit, dually chordale Graphen zu charakterisieren.
+
+\begin{Theorem}\label{theo:DuallyChordalSpanningTree} \cite{duallyChordal}
+    Ein Graph $G$ ist dually chordal\index{chordal!dually}\index{dually chordal} genau dann, wenn er einen Spannbaum~$T$ besitzt, so dass jede maximale Clique in $G$ einen Teilbaum von $T$ induziert.
+\end{Theorem}
+
+
+\subsection{Blätter}
+Blätter sind eine spezielle Sorte von Knoten, die man üblicherweise mit Bäumen in Verbindung bringt. Dabei handelt es sich um Knoten, die nur einen Nachbarn haben.
+
+\begin{mydef}[Blatt\index{Blatt}]
+    In einem Graphen ist ein Knoten $v$ ein \emph{Blatt} genau dann, wenn $v$ genau einen Nachbarn hat ($|N(v)|=1$).
+\end{mydef}
+
+Es ist leicht zu sehen, dass jeder Baum (mit zwei oder mehr Knoten) mindestens zwei Blätter besitzt. Trotzdem können auch in anderen Graphen Blätter vorkommen.
+
+
+
+
+\section{Cliquenweite}
+
+Bei Cliquenweite handelt es sich um ein Komplexitätsmaß für Graphen. Als Basis dienen vier Operationen, mit denen sich jeder Graph erzeugen lässt: 
+
+%\begin{itemize}
+%    \item [$\odot_i$]  Es wird ein neuer Knoten erstellt und mit dem Label~$i$ versehen.
+%
+%\item[$G_1 \oplus G_2$]  Wurden bereits zwei Graphen $G_1$ und $G_2$ erzeugt, werden sie nun als ein Graph $G$ betrachtet. Es werden jedoch keine neuen Kanten erstellt. Somit ist $G$ nicht zusammenhängend.
+%
+%\item [$\eta_{i,j}(G)$]  Bei dieser Operation werden zwei Knoten~$u$ und $v$ miteinander verbunden, wenn $u$ das Label~$i$ und $v$ das Label~$j$ hat. Diese Operation betrifft alle Knoten im Graphen mit den entsprechenden Labels. Außerdem gilt, dass $i \neq j$ sein muss. Es ist die einzige Möglichkeit, um Kanten zu erzeugen.
+%
+%\item[$\rho_{i \rightarrow j}(G)$]  Vorhandene Labels können umbenannt werden. Dabei erhalten alle Knoten mit dem Label~$i$ das Label~$j$. Es ist nicht möglich nur einen einzelnen Knoten umzubenennen.
+%\end{itemize}
+
+\LTXtable{\textwidth}{tex-Dateien/CliquenweiteOperationen}
+
+Die Cliquenweite eines Graphen definiert sich nun über diese vier Operationen.
+
+\begin{mydef}[Cliquenweite\index{Cliquenweite}]
+    Die Cliquenweite eines Graphen~$G$ ist die minimal notwendige Anzahl an verschiedenen Labels, die nötig ist, um $G$ mit den Operationen $\odot_i$, $\oplus$, $\eta_{i,j}$ und $\rho_{i \rightarrow j}$ zu erzeugen.
+\end{mydef}
+
+%\subsection{Beispiel}
+Anhand eines Gems sei nachfolgend demonstriert, wie sich mit den oben genannten Operationen ein Graph erzeugen lässt. Abbildung~\ref{pic:bsp_CliqueWidthGem} stellt dies graphisch dar.
+
+\begin{figure}[htbp]
+    \centering
+    %\hspace*{\fill}
+    \subfloat[\label{pic:bsp_CliqueWidthGem_a}$\eta_{1,3}(\odot_1 \oplus \odot_3)$]{
+    \begin{tikzpicture}
+        [thick,grlbl/.style={lbl,circle,draw=clDark25Green,fill=clLight60Green,inner sep=2pt},
+         bllbl/.style={lbl,circle,draw=clDark25Blue,fill=clLight80Blue,inner sep=2pt},
+         orlbl/.style={lbl,circle,draw=clDark25Orange,fill=clLight60Orange,inner sep=2pt}]
+        \def\len{1.25}
+        
+        \node[hN] (a) at (180:\len) {};
+        \node[hN] (b) at (120:\len) {};
+        \node[orlbl] (c) at (60:\len) {1};
+        \node[bllbl] (d) at (0:\len) {3};
+        \node[hN] (e) at (0,0) {};
+        
+        \draw (d)--(c);
+    \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_CliqueWidthGem_b}$\text{\protect\subref{pic:bsp_CliqueWidthGem_a}} \oplus \odot_2 \oplus \odot_1$]{
+    \begin{tikzpicture}
+        [thick,grlbl/.style={lbl,circle,draw=clDark25Green,fill=clLight60Green,inner sep=2pt},
+         bllbl/.style={lbl,circle,draw=clDark25Blue,fill=clLight80Blue,inner sep=2pt},
+         orlbl/.style={lbl,circle,draw=clDark25Orange,fill=clLight60Orange,inner sep=2pt}]
+        \def\len{1.25}
+        
+        \node[orlbl] (a) at (180:\len) {1};
+        \node[hN] (b) at (120:\len) {};
+        \node[orlbl] (c) at (60:\len) {1};
+        \node[bllbl] (d) at (0:\len) {3};
+        \node[grlbl] (e) at (0,0) {2};
+        
+        \draw (d)--(c);
+    \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_CliqueWidthGem_c}$\eta_{1,2}(\eta_{2,3}(\text{\protect\subref{pic:bsp_CliqueWidthGem_b}}))$]{
+    \begin{tikzpicture}
+        [thick,grlbl/.style={lbl,circle,draw=clDark25Green,fill=clLight60Green,inner sep=2pt},
+         bllbl/.style={lbl,circle,draw=clDark25Blue,fill=clLight80Blue,inner sep=2pt},
+         orlbl/.style={lbl,circle,draw=clDark25Orange,fill=clLight60Orange,inner sep=2pt}]
+        \def\len{1.25}
+        
+        \node[orlbl] (a) at (180:\len) {1};
+        \node[hN] (b) at (120:\len) {};
+        \node[orlbl] (c) at (60:\len) {1};
+        \node[bllbl] (d) at (0:\len) {3};
+        \node[grlbl] (e) at (0,0) {2};
+        
+        \draw (a)--(e)--(c)--(d)--(e);
+    \end{tikzpicture}
+    }
+    \par\vspace*{20pt}
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_CliqueWidthGem_d}$\rho_{1 \rightarrow 2}(\text{\protect\subref{pic:bsp_CliqueWidthGem_c}}) \oplus \odot_1$]{
+    \begin{tikzpicture}
+        [thick,grlbl/.style={lbl,circle,draw=clDark25Green,fill=clLight60Green,inner sep=2pt},
+         bllbl/.style={lbl,circle,draw=clDark25Blue,fill=clLight80Blue,inner sep=2pt},
+         orlbl/.style={lbl,circle,draw=clDark25Orange,fill=clLight60Orange,inner sep=2pt}]
+        \def\len{1.25}
+        
+        \node[grlbl] (a) at (180:\len) {2};
+        \node[orlbl] (b) at (120:\len) {1};
+        \node[grlbl] (c) at (60:\len) {2};
+        \node[bllbl] (d) at (0:\len) {3};
+        \node[grlbl] (e) at (0,0) {2};
+        
+        \draw (a)--(e)--(c)--(d)--(e);
+    \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_CliqueWidthGem_e}$\eta_{1,2}(\text{\protect\subref{pic:bsp_CliqueWidthGem_d}})$]{
+    \begin{tikzpicture}
+        [thick,grlbl/.style={lbl,circle,draw=clDark25Green,fill=clLight60Green,inner sep=2pt},
+         bllbl/.style={lbl,circle,draw=clDark25Blue,fill=clLight80Blue,inner sep=2pt},
+         orlbl/.style={lbl,circle,draw=clDark25Orange,fill=clLight60Orange,inner sep=2pt}]
+        \def\len{1.25}
+        
+        \node[grlbl] (a) at (180:\len) {2};
+        \node[orlbl] (b) at (120:\len) {1};
+        \node[grlbl] (c) at (60:\len) {2};
+        \node[bllbl] (d) at (0:\len) {3};
+        \node[grlbl] (e) at (0,0) {2};
+        
+        \draw (b)--(a)--(e)--(b)--(c)--(e)--(d)--(c);
+    \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \caption{Erstellen eines Gems}
+    \label{pic:bsp_CliqueWidthGem}
+\end{figure}
+
+
+\begin{enumerate}
+    \item[\subref{pic:bsp_CliqueWidthGem_a}] Begonnen wird mit dem Erstellen von zwei Knoten mit den Labels~$1$ und $3$. Diese werden zu einem Graphen zusammengefügt und mit einer Kante verbunden.
+    \[ G:= \eta_{1,3}(\odot_1 \oplus \odot_3) \]
+    
+    \item[\subref{pic:bsp_CliqueWidthGem_b}] Als nächstes wird der bisherige Graph um zwei weitere Knoten mit den Labels~$1$ und $2$ erweitert.
+    \[ G:= G \oplus \odot_2 \oplus \odot_1 \]
+    
+    \item[\subref{pic:bsp_CliqueWidthGem_c}] Im nächsten Schritt verbindet man den Knoten mit Label~$2$ mit den Knoten, welche die Labels~$1$ und $3$ haben.
+    \[ G:= \eta_{1,2}(\eta_{2,3}(G)) \]
+    
+    \item[\subref{pic:bsp_CliqueWidthGem_d}] Nun erhalten die Knoten mit Label~$1$ das Label~$2$. Außerdem wird ein neuer Knoten mit Label~$1$ eingefügt.
+    \[ G:= \rho_{1 \rightarrow 2}(G) \oplus \odot_1 \]
+    
+    \item[\subref{pic:bsp_CliqueWidthGem_e}] Abschließend werden erneut die Knoten mit Label~$1$ mit den Knoten mit Label~$2$ verbunden.
+    \[ G:= \eta_{1,2}(G) \]
+    
+
+\end{enumerate}
+
+Der so erzeugte Graph lässt sich auch in einer einzigen Formel ausdrücken:
+\[ G:=\eta_{1,2}(\rho_{1 \rightarrow 2}(\eta_{1,2}(\eta_{2,3}(\eta_{1,3}(\odot_1 \oplus \odot_3) \oplus \odot_2 \oplus \odot_1))) \oplus \odot_1)  \]
+Eine solche Formel wird auch als Cliquenweite-Ausdruck bezeichnet.
+
+%\subsection{Cliquenweite verschiedener Graphenklassen}
+%Das ermitteln der Cliquenweite eines Graphen ist im Allgemeinen ein schwiriges Problem. \todo{Quelle und genaue Komplexität} Für einige Graphenklassen ist es aber möglich eine maximale Cliquenweite anzugeben. Das heißt, die Klasse enthält keinen Graphen, der eine höhere Cliquenweite hat. Tabelle~\ref{tbl:Cliquewidth_classes} gibt eine Übersicht über die maximale Cliquenweite der in diesem Kapitel vorgestellten Graphenklassen.
+%
+%\begin{table}[htbp]\linespread{1.15}
+%    \setlength\tabcolsep{.75em}
+%    \arrayrulecolor{clChapTxt}
+%    \setlength\arrayrulewidth{1pt}
+%    \centering
+%    \begin{tabular}{lc}
+%        \hline
+%            \bfseries\rmfamily\textcolor{clChapTxt}{Klasse} &     \bfseries\rmfamily\textcolor{clChapTxt}{Cliquenweite}\\
+%        \hline
+%            chordal &     unbegrenzt\\
+%            strongly chordal &     unbegrenzt\\
+%            Intervall- &     unbegrenzt\\
+%            distanzerblich &     3\\
+%            dually chordal &     unbegrenzt\\
+%            Baum &     3\\
+%        \hline
+%    \end{tabular}
+%    \caption[Cliquenweite verschiedener Graphenklassen]{Cliquenweite verschiedener Graphenklassen. \cite{cliqueWidthPerfectGraphs}}
+%    \label{tbl:Cliquewidth_classes}
+%\end{table}
+%

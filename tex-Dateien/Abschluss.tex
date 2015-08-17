@@ -1,0 +1,9 @@
+\chapter{Abschluss}
+
+Diese Arbeit untersuchte das Dominating Induced Matching Problem. Dabei stellte sich heraus, dass es sich (unabhängig von der Graphenklasse) auf die gewichtete Suche nach einer dominierenden Menge im Linegraphen bzw. auf die Suche nach einer gewichteten unabhängigen Menge im Quadrat des Linegraphen reduzieren lässt (Satz~\ref{theo:EEDiffEDiffMWDiffMWIS}, S.~\pageref{theo:EEDiffEDiffMWDiffMWIS}).
+
+Darauf basierend konnte gezeigt werden, dass sich das Problem für die Klasse der $\alpha$-azyklischen Hypergraphen in Polynomialzeit lösen lässt. Dazu wurde ein Algorithmus entwickelt, der in Linearzeit ein efficient dominating set für dually chordale Graphen findet (Algorithmus~\ref{algo:dcED}, S.~\pageref{algo:dcED}), welches die Linegraphen der $\alpha$-azyklischen Hypergraphen sind (Satz~\ref{theo:AlphaAzyklDuallyChordal}, S.~\pageref{theo:AlphaAzyklDuallyChordal}).
+
+Offen bleibt die Frage, ob es in Linearzeit möglich ist, ein dominating induced Matching für $\alpha$-azyklischen Hypergraphen zu finden. Die im vorherigen Kapitel vorgestellte Lösung kann quadratische Laufzeit erreichen, da der Linegraph des Hypergraphen gebildet werden muss. Für eine Lösung mit linearem Aufwand muss das vermieden werden.
+
+Da Satz~\ref{theo:EEDiffEDiffMWDiffMWIS} unabhängig von einer Graphenklasse ist, stellen sich außerdem die Fragen: Gibt es weitere Graphen- oder Hypergraphenklassen, für die Satz~\ref{theo:EEDiffEDiffMWDiffMWIS} zu einer Lösung führt? Gibt es Klassen, für welche die Suche nach einer dominierenden Menge im Linegraphen eine bessere Lösung bringt als die Suche nach einer unabhängigen Menge im Quadrat des Linegraphen?

@@ -1,0 +1,147 @@
+\chapter{Design}
+
+Das Kapitel dient erstmal als Spielwiese und um ansatzweise die Möglichkeiten des Designs zu beschreiben.
+
+\section{Listen}
+
+Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text.
+
+Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. \footnote{bla}
+\begin{itemize}
+	\item bla
+	\item bla
+	\item bla
+\end{itemize}
+Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text.
+
+Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. 
+
+\begin{itemize}
+	\item bla
+	\item bla
+	\item bla
+\end{itemize}
+
+Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. 
+
+\begin{itemize}
+	\item Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text.
+	
+	Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text. Irgend ein Text.
+	
+	\item bla
+	\item bla
+\end{itemize}
+
+
+\section{Definitionen und Co.}
+Definitionen sind blau hinterlegt.
+Sätze und Lemmata sind grün hinterlegt und Sätze zusätzlich dunkelgrün gerahmt.
+Die Rahmung dient zum stärkeren hervorheben.
+Beweise sind weder gerahmt, noch hinterlegt. Das qed-Symbol muss mittels \texttt{\small\textbackslash qed} selbst gesetzt werden.
+ToDos sind rot, damit sie gut auffallen.
+
+%\subsection{Anwendung}
+%\subsubsection{Definitionen, Sätze und Beweise}
+%{\ttfamily\small
+%\textbackslash begin\{mydef / myTheo / myProof\}[...]\\
+%\ \ ...\\
+%\textbackslash end\{mydef / myTheo / myProof\}
+%}
+%
+%\subsubsection{ToDo}
+%{\ttfamily\small
+%\textbackslash todo\{...\}
+%}
+%
+\subsection{Beispiel}
+\begin{mydef}[Graph]Ein Graph $G$ ist ein 2-Tupel $G=(V,E)$. Dabei ist
+ $V$ eine endliche Menge von Knoten und
+ $E \subseteq \{\{u,v\} \ |\ u,v \in V \wedge u \neq v\}$ die Menge an Kanten.
+
+Eine Kante $\{u,v\}$ wird abgekürzt durch $uv$.
+\end{mydef}
+
+\begin{Theorem}
+Graphen sind toll!
+\end{Theorem}
+
+\begin{Lemma}\label{Lem:NurTolleSachen}
+Ich schreibe nur über tolle Sachen.
+\end{Lemma}
+
+\begin{Proof}
+Angenommen, Graphen wären nicht toll. Dann würde ich diese Arbeit nicht schreiben. $\overset{Lem. \ref{Lem:NurTolleSachen}}{\Rightarrow}$ Annahme falsch. $\Rightarrow$ Graphen sind toll! \qed
+\end{Proof}
+
+\todo{Ein gutes Beispiel für den \textbackslash todo-Befehl finden.}
+
+\section{Listings}
+Listings sehen noch voll doof aus und können kein UTF8.
+\begin{lstlisting}[caption={McGregor-Algorithmus},label={lst:McGregor}]
+Procedure 3+1(i) //  $\color{darkgreen}i\geq 1; i\in \mathbb{N}$
+    While (i > 1)
+        If i Mod 2 = 0 Then
+            i = i / 2
+        Else
+            i = 3 * i + 1
+        End If
+    End While
+End Procedure
+\end{lstlisting}
+
+\todo{UTF8 für Listings}
+
+\todo{Listings in hübsch :)
+
+Eventuell einrahmen und/oder hinterlegen. Dann kann eventuell auch auf float verzichtet werden.}
+
+
+%\begin{framed}\ttfamily%\bfseries \boldmath
+%Procedure BlaBla(i) {\color{darkgreen}// $i\geq 1; i\in \mathbb{N}$\\}
+%\ \ \ \ While (i > 1)\\
+%\ \ \ \ \ \ \ \ If i Mod 2 = 0 Then\\
+%\ \ \ \ \ \ \ \ \ \ \ \ i = i / 2\\
+%\ \ \ \ \ \ \ \ Else\\
+%\ \ \ \ \ \ \ \ \ \ \ \ i = 3 * i + 1\\
+%\ \ \ \ \ \ \ \ End If\\
+%\ \ \ \ End While\\
+%End Procedure
+%\end{framed}
+
+\section{Join und Cojoin}
+Join (\textbackslash join) und Cojoin (\textbackslash cojoin) wurden mit TikZ umgesetzt, da \textbackslash textcircled doof aussieht :)
+
+\subsection{Code}
+{\ttfamily\small
+\textbackslash newcommand\{\textbackslash cirBase\}[1]\\
+\{\textbackslash tikz[baseline,line width=.1ex]\{\textbackslash node [draw,anchor=base,inner sep=.2ex,circle] \{\#1\};\}\}
+
+\textbackslash DeclareRobustCommand\{\textbackslash mathCir\}[1]\{\\
+\ \ \textbackslash ifmmode \textbackslash ,\textbackslash cirBase\{\#1\}\textbackslash ,\\
+\ \ \textbackslash else\\
+\ \ \ \ \textbackslash cirBase\{\#1\}\\
+\ \ \textbackslash fi\\
+\}
+
+\textbackslash newcommand\{\textbackslash join\}\{\textbackslash mathCir\{1\}\}\\
+\textbackslash newcommand\{\textbackslash cojoin\}\{\textbackslash mathCir\{0\}\}
+}%\normalfont
+
+\subsection{Vergleich mit \textbackslash textcircled}
+\subsubsection{\textbackslash textcircled\{1\}}
+
+Bla \textcircled{1} bla.
+
+{\huge\bfseries Groß \textcircled{1} und fett mit Euro \textcircled{€}.}
+
+Mathemodus $G_1 \textcircled{1} G_2$
+
+
+\subsubsection{\textbackslash join}
+
+Bla \join bla.
+
+{\huge\bfseries Groß \join und fett mit Euro \cirBase{€}. \footnote{mit \textbackslash cirBase\{€\}}}
+
+Mathemodus $G_1\join G_2$

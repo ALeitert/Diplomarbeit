@@ -1,0 +1,187 @@
+\chapter{Dominating Induced Matchings}
+
+Eine Matching ist eine Teilmenge von Kanten eines (Hyper)Graphen, wobei die Kanten keinen gemeinsamen Knoten besitzen.
+
+\begin{mydef}[Matching\index{Matching}]
+Gegeben sei ein Hypergraph $H=(V,\mE)$. Eine Menge $M \subseteq \mE$ heißt \emph{Matching}, wenn für alle $e,e' \in M$ gilt: $e\cap e' = \emptyset$.
+\end{mydef}
+
+Ein dominating induced Matching (dim) zeichnet sich dadurch aus, dass jede Kante, die nicht zum Matching gehört, einen gemeinsamen Knoten mit einer Kante des Matchings besitzt (dominating), und dass zwischen zwei Kanten des Matchings immer mindestens zwei weitere Kanten liegen (induced).
+
+Gehört eine Kante $m$ zum Matching oder ist sie mit einer Kante des Matchings verbunden, so wird gesagt: $m$ wird gematcht.
+
+\begin{mydef}[dominating induced Matching\index{dominating induced Matching}]
+Gegeben sei ein Hypergraph $H=(V,\mE)$ und ein Matching $M$. $M$ ist ein \emph{dominating induced Matching}, wenn gilt:
+%%% Original-Definition
+% \forall\ e,e' \in M&: dist_G(e,e') \geq 2 & \text{\emph{induced}} \\
+% \forall\ e \in \mE\, \backslash\, M &: \exists\ \varepsilon \in M \text{ mit } \varepsilon\cap e \neq \emptyset & \text{\emph{dominating}}
+\[ \forall\,e \in \mE : \exists!\, m \in M \text{ mit } m\cap e \neq \emptyset \]
+\end{mydef}
+
+%\begin{mydef}[induced Matching]
+%Gegeben sei ein Graph $G=(V,E)$ und ein Matching $M$. $M$ ist ein \emph{induced Matching}, wenn für alle $e,e' \in M$ gilt: $dist_G(e,e') \geq 2$.
+%\end{mydef}
+
+%\begin{mydef}[dominating Matching]\label{def:dominatingMatching}
+%Gegeben sei ein Graph $G$ und ein Matching $M$. $M$ ist ein \emph{dominating Matching}, wenn für alle $e \in E \backslash M$ gilt: Es existiert ein $e' \in M$ mit $e\cap e' \neq \emptyset$.
+%\end{mydef}
+
+Das dazugehörige Entscheidungsproblem (Dominating Induced Matching Problem; kurz~DIM\index{DIM}) fragt, ob ein Graph ein solches Matching besitzt. Für Graphen wird es auch als Efficient Edge Domination Problem\index{Efficient Edge Domination} (EED\index{EED}) bezeichnet und ist NP-vollständig \cite{dimNPv}. Dies gilt auch für Hypergraphen, da jeder Graph auch ein Hypergraph ist.
+
+Das Besondere an DIM ist, dass es sowohl ein Pack- als auch ein Abdeckungsproblem darstellt. Es müssen genug Kanten gewählt werden, damit alle Kanten, die nicht zum Matching gehören mit einer des Matchings verbunden sind. Zwischen den Kanten des Matching müssen sich aber gleichzeitig immer mindestens zwei weitere Kanten befinden. Somit muss jede Kante genau ein mal gematcht werden.
+
+\todo{Beispiel}
+\begin{figure}[htb]
+\subfloat[]{\begin{tikzpicture}
+  [thick,node distance=.5cm]
+
+  \node[mN] (a) at (-1.125,0) {};
+  \node[mN] (b) [right=of a] {};
+  \node[nN] (c) [right=of b] {};
+  \node[mN] (d) [right=of c] {};
+  \node[mN] (e) [right=of d] {};
+  \node[nN] (f) [below=of c] {};
+    
+    \begin{pgfonlayer}{background}
+        \foreach \x/\y in {a/b,d/e} {
+            \draw [very thick,-,darkgreen] (\x.center) -- (\y.center);
+        }
+
+        \foreach \x/\y in {b/c,c/d} {
+            \draw [very thick,-,blue] (\x.center) -- (\y.center);
+        }
+        
+        \draw [very thick,-,red] (c.center) -- (f.center);
+        
+    \end{pgfonlayer}
+
+ \foreach \x/\y in {a/b,b/c,c/d,d/e,c/f} {
+     %\draw (\x) -- (\y);
+ }
+  
+\end{tikzpicture}}
+\hspace*{\fill}
+\subfloat[]{\begin{tikzpicture}
+  [thick,node distance=.5cm]
+
+  \node[nN] (a) at (-1.125,0) {};
+  \node[nN] (b) [right=of a] {};
+  \node[nN] (c) [right=of b] {};
+  \node[nN] (d) [right=of c] {};
+  \node[nN] (e) [right=of d] {};
+  \node[nN] (f) [below=of c] {};
+    
+    \begin{pgfonlayer}{background}
+        \foreach \x/\y in {b/c} {
+            \draw [line width=0.075cm,-,darkgreen] (\x.center) -- (\y.center);
+        }
+
+        \foreach \x/\y in {a/b,c/d,c/f} {
+            \draw [line width=0.075cm,-,orange] (\x.center) -- (\y.center);
+        }
+        
+        \draw [line width=0.075cm,-,violet] (d.center) -- (e.center);
+        
+    \end{pgfonlayer}
+
+ \foreach \x/\y in {a/b,b/c,c/d,d/e,c/f} {
+     %\draw (\x) -- (\y);
+ }
+  
+\end{tikzpicture}}
+\hspace*{\fill}
+\subfloat[]{\begin{tikzpicture}
+  [thick,
+   normalN/.style={circle,draw,minimum size=0.25cm,inner sep=0pt,fill=white},
+   node distance=.5cm]
+
+  \node[normalN] (a) at (-1.125,0) {};
+  \node[normalN] (b) [right=of a] {};
+  \node[normalN] (c) [right=of b] {};
+  \node[normalN] (d) [right=of c] {};
+  \node[normalN] (e) [right=of d] {};
+  \node[normalN] (f) [below=of c] {};
+
+    
+    \begin{pgfonlayer}{background}
+        \foreach \x/\y in {a/b,d/e} {
+            \draw [line width=0.075cm,-,bgred] (\x.center) -- (\y.center);
+        }
+
+        \foreach \x/\y in {b/c,c/d} {
+            \draw [line width=0.075cm,-,bgblue] (\x.center) -- (\y.center);
+        }
+        
+        \draw [line width=0.075cm,-,darkgreen] (c.center) -- (f.center);
+        
+    \end{pgfonlayer}
+
+ \foreach \x/\y in {a/b,b/c,c/d,d/e,c/f} {
+     %\draw (\x) -- (\y);
+ }
+\end{tikzpicture}}
+\caption{Die Graphen $P_4$, $C_5$ und $K_6$.}
+\label{pic:bsp_DIM}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+  [thick,
+   normalN/.style={circle,draw,minimum size=0.25cm,inner sep=0pt,fill=white},
+   greenN/.style={normalN,fill=bggreen},
+   node distance=.5cm]
+
+  \node[normalN] (a) at (-1.125,0) {};
+  \node[normalN] (b) [right=of a] {};
+  \node[normalN] (c) [right=of b] {};
+  \node[normalN] (d) [right=of c] {};
+  \node[normalN] (e) [right=of d] {};
+  \node[normalN] (f) [below=of c] {};
+  \node[normalN] (g) [below=of f] {};
+  
+    \begin{pgfonlayer}{background}
+        \foreach \x/\y in {a/b,d/e,f/g} {
+            \draw [line width=0.075cm,darkgreen] (\x.center) -- (\y.center);
+        }
+
+        \foreach \x/\y in {b/c,c/d,c/f} {
+            \draw [line width=0.075cm,-,bgblue] (\x.center) -- (\y.center);
+        }
+    \end{pgfonlayer}
+
+ \foreach \x/\y in {a/b,b/c,c/d,d/e,c/f,f/g} {
+     %\draw (\x) -- (\y);
+ }
+  
+\end{tikzpicture}
+\caption{TODO}
+\label{pic:bsp_BnB_1}
+\end{figure}
+
+\section{DIM für spezielle Graphen-Klassen}
+\clearpage
+\begin{Theorem}
+	DIM ist NP-vollständig für $\alpha$-azyklische Hypergraphen.
+\end{Theorem}
+\todo{Entstehender Graph ist nicht $\alpha$-azyklisch. $S_3$ funktioniert nicht.}
+Reduktion von indipendent perfect dominating set für chordale Graphen (dessen NP-Vollständigkeit in \cite{ChainChin1996147})
+
+Gegeben sei ein chordaler Graph $G=(V,E)$. Es wird nun der Hypergraph $H=(\mV,\mE)$ erzeugt.
+
+Zu jedem Knoten $v$ in $G$ gibt es ein Knoten $\nu_v$ in $H$. $$\mV := \{\nu_v\ |\ v \in V\}$$
+
+Zu jeder Kante $e$ in $G$ gibt es einen Knoten $\nu_e$ in $H$. $$\mV := \mV \cup \{\nu_e\ |\ e \in E\}$$
+
+Für jeden Knoten $v$ in $G$ gibt es eine Hyperkante $\varepsilon_v$ in $H$, welche den Knoten $\nu_v$ und die Knoten $\nu_e$ aller mit $v$ verbundenen Kanten $e$ enthällt. $$\varepsilon_v := \{\nu_v\} \cup \{\nu_e\ |\ v\in e\}$$
+
+Für jede max. Clique $K$ in $G$ gibt es ein Hyperkante $\varepsilon_K$ in $H$, welche die Konten $\nu_v$ und $\nu_e$ aller Knoten $v$ und Kanten $e$ der Clique einschließt. $$\varepsilon_K := \{\nu_v\ |\ v \in K\} \cup \{\nu_e\ |\ \text{$e$ ist Kante in $K$}\}$$ $$\mE:=\mE\cup \{\varepsilon_K\ |\ \text{$K$ ist max. Clique in $G$} \}$$
+
+Zusätzlich gint es für jede max. Clique $K$ die Knoten $\nu_K^i$ und $\nu_K^o$ sowie die Hyperkanten $\varepsilon_K^i$ und $\varepsilon_K^o$. Dabei ist $\nu_K^i$ in $\varepsilon_K^i$ und $\varepsilon_K$ enthalten. $\nu_K^o$ ist in $\varepsilon_K^i$ und $\varepsilon_K^o$. Diese Konstruktion sorgt dafür, dass $\varepsilon_K$ immer gematcht werden kann, aber selber nie zum Matching gehört (anderfalls wird $\varepsilon_K^o$ nicht gematcht).
+$$\varepsilon_K:=\varepsilon_K\cup\{\nu_K^i\}$$ \\
+$$\varepsilon_K^i:=\{\nu_K^i,\nu_K^o\}$$ \\
+$$\varepsilon_K^o:=\{\nu_K^o\}$$ \\
+$$\mV:=\mV\cup \{\nu_K^i,\nu_K^o\}$$ \\
+$$\mE:=\mE\cup\{\varepsilon_K^i,\varepsilon_K^o\}$$
+
+

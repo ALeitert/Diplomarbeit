@@ -1,0 +1,882 @@
+\chapter{Hypergraphen}
+
+Dieses Kapitel befasst sich mit Hypergraphen. Der Fokus liegt dabei auf den azyklischen Hypergraphen sowie der Charakterisierung ihrer Linegraphen.
+
+\section{Einleitung}
+Hypergraphen sind eine Verallgemeinerung von Graphen. Kanten sind nun nicht mehr auf zwei Knoten beschränkt, sondern können beliebig viele (jedoch nicht null) Knoten beinhalten.
+
+\begin{mydef}[Hypergraph\index{Hypergraph}]
+    Ein \emph{Hypergraph} $H$ ist ein 2-Tupel $H=(V,\mE)$.  Dabei ist $V$ eine endliche Menge von Knoten und $\mE \subseteq \{e \ |\ e \subseteq V ;\ e \neq \emptyset\}$ die Menge der Hyperkanten.
+\end{mydef}
+
+Da Hypergraphen nicht auf genau zwei Knoten pro Kante beschränkt sind, reicht die bisherige Definition für Graphisomorphie (Definition~\ref{def:Graphisomorphie}, S.~\pageref{def:Graphisomorphie}) nicht mehr aus. Die ursprüngliche Definition wird deshalb so erweitert, dass Kanten nicht auf zwei Knoten beschränkt sind.
+\begin{mydef}[Isomorphie von Hypergraphen\index{Isomorphie!von Hypergraphen}]
+    Zwei Hypergraphen $H_1 = (V_1,\mE_1)$ und $H_2 = (V_2,\mE_2)$ heißen \emph{isomorph} genau dann, wenn eine bijektive Abbildung $\varphi: V_1 \rightarrow V_2$ existiert, so dass für alle Hyperkanten $\{v_1,\ldots,v_i\} \in \mE_1$ gilt: \[ \{v_1,\ldots,v_i\} \in \mE_1 \Leftrightarrow \{\varphi(v_1), \ldots, \varphi(v_i)\} \in \mE_2 \]
+    
+    Die Isomorphie zweier Hypergraphen wird wie folgt dargestellt: $H_1 \sim H_2$
+\end{mydef}
+
+
+
+%\subsection{Isomorphie und Teilgraphen-Konzepte}
+%Da Hypergraphen nicht auf genau zwei Knoten pro Kante beschränkt sind, reichen die bisherigen Definionen für Teilgraphen\footnote{Definition~\ref{def:Subgraph}, S.~\pageref{def:Subgraph}} und Graphisomorphie\footnote{Definition~\ref{def:Graphisomorphie}, S.~\pageref{def:Graphisomorphie}} nicht mehr aus.
+%
+%\todo{eventuell ohne Fußnoten}
+%
+%\subsubsection{Isomorphie}
+%Für Isomorphie ist es ausreichend, die ursprüngliche Definition so zu erweitern, dass Kanten nicht auf zwei Knoten beschränkt sind.
+%\begin{mydef}[Isomorphie von Hypergraphen\index{Isomorphie!von Hypergraphen}]
+%    Zwei Hypergraphen $H_1 = (V_1,\mE_1)$ und $H_2 = (V_2,\mE_2)$ heißen \emph{isomorph} genau dann, wenn eine bijektive Abbildung $\varphi: V_1 \rightarrow V_2$ existiert, so dass für alle Hyperkanten $\{v_1,\ldots,v_i\} \in \mE_1$ gilt: \[ \{v_1,\ldots,v_i\} \in \mE_1 \Leftrightarrow \{\varphi(v_1), \ldots, \varphi(v_i)\} \in \mE_2 \]
+%    
+%    Die Isomorphie zweier Hypergraphen wird wie folgt dargestellt: $H_1 \sim H_2$
+%\end{mydef}
+%
+%\subsubsection{Teilgraphen}
+%
+%\todo{Text und verschiedene Konzepte}
+%
+%\todo{eventuell bessere Überschrift}
+
+
+\section{Umwandlungsfunktionen}
+Es gibt verschiedene Möglichkeiten, Graphen und Hypergraphen in einander umzuformen. In diesem Abschnitt werden drei Varianten vorgestellt. 
+
+\subsection{2-Section Graphen}
+Die 2-Section Graphen sind eine Möglichkeit, einen Hypergraphen~$H$ als Graphen darzustellen. Dazu werden die Knoten von $H$ übernommen und miteinander verbunden, wenn sie in der gleichen Hyperkante liegen.
+
+\begin{mydef}[2-Section Graph\index{2-Section Graph}\index{$2Sec(\cdot)$}]
+    Es sei $H=(V,\mE)$ ein Hypergraph. Der \emph{2-Section Graph} $2Sec(H)=(V_2,E_2)$ von $H$ ist dann wie folgt definiert:
+    \begin{align*}
+        V_2 &= V \\
+        E_2 &= \{uv\ |\ \exists\,e\in\mE\ u,v\in e\}
+    \end{align*}
+\end{mydef}
+
+Bei dieser Umwandlung gehen jedoch Informationen über den Hypergraphen verloren. Dadurch lässt sich ein 2-Section Graph nicht eindeutig einem Hypergraphen zuordnen. Abbildung~\ref{pic:bsp_2Sec} stellt zwei Hypergraphen und deren 2-Section Graphen dar.
+
+\begin{figure}[htb]
+    \centering
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_2Sec_H1}]{
+        \begin{tikzpicture}
+            
+            \node[nN] (a) at (90:.75) {};
+            \node[nN] (b) at (210:.75) {};
+            \node[nN] (c) at (330:.75) {};
+            
+            \begin{pgfonlayer}{background}
+                \draw[very thick,clLight60Blue,fill opacity=.5,radius=1.2cm] (0,0) circle;
+                \node [fill=clRed,ellipse,fill opacity=.0,rotate fit= 60] (ab)
+                      [fit=(a) (b)] {};
+
+                \node [fill=clLight60Blue,ellipse,fill opacity=.0,rotate fit= 0] (bc)
+                      [fit=(c) (b)] {};
+
+                \node [fill=clGreen,ellipse,fill opacity=.0,rotate fit= -60] (ac)
+                      [fit=(a) (c)] {};
+
+            \end{pgfonlayer}
+            
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_2Sec_H2}]{
+        \begin{tikzpicture}
+            
+            \node[nN] (a) at (90:.75) {};
+            \node[nN] (b) at (210:.75) {};
+            \node[nN] (c) at (330:.75) {};
+            
+            \begin{pgfonlayer}{background}
+                \node [very thick,draw=clRed,ellipse,fill opacity=.5,rotate fit= 60] (ab)
+                      [fit=(a) (b)] {};
+
+                \node [very thick,draw=clLight60Blue,ellipse,fill opacity=.5,rotate fit= 0] (bc)
+                      [fit=(c) (b)] {};
+
+                \node [very thick,draw=clGreen,ellipse,fill opacity=.5,rotate fit= -60] (ac)
+                      [fit=(a) (c)] {};
+
+                \fill[clLight60Blue,fill opacity=.0,radius=1.2cm] (0,0) circle;
+            \end{pgfonlayer}
+            
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_2Sec_S}]{
+        \begin{tikzpicture}[thick]
+            
+            \node[nN] (a) at (90:.75) {};
+            \node[nN] (b) at (210:.75) {};
+            \node[nN] (c) at (330:.75) {};
+            
+            \draw (a)--(b)--(c)--(a);
+            
+            \begin{pgfonlayer}{background}
+                \node [fill=clRed,ellipse,fill opacity=.0,rotate fit= 60] (ab)
+                      [fit=(a) (b)] {};
+
+                \node [fill=clLight60Blue,ellipse,fill opacity=.0,rotate fit= 0] (bc)
+                      [fit=(c) (b)] {};
+
+                \node [fill=clGreen,ellipse,fill opacity=.0,rotate fit= -60] (ac)
+                      [fit=(a) (c)] {};
+
+                \fill[clLight60Blue,fill opacity=.0,radius=1.2cm] (0,0) circle;
+            \end{pgfonlayer}
+
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+
+    \caption[Zwei Hypergraphen und ihr 2-Section Graph]
+    {Die Hypergraphen \subref{pic:bsp_2Sec_H1} und \subref{pic:bsp_2Sec_H2} sowie ihr 2-Section Graph \subref{pic:bsp_2Sec_S}}
+    
+    \label{pic:bsp_2Sec}
+\end{figure}
+
+\subsection{Linegraphen}
+
+Die Idee der Linegraphen ist es, die Nachbarschaft von Hyperkanten in einem Hypergraphen zu betrachten und als Graphen darzustellen. Dazu werden die Hyperkanten eines gegebenen Hypergraphen~$H$ als Knoten betrachtet. Zwei Knoten sind dann durch eine Kante verbunden, wenn die entsprechenden Hyperkanten einen gemeinsamen Knoten in $H$ haben. Abbildung~\ref{pic:bsp_Linegraph} stellt ein Beispiel für einen Hypergraphen und seinen Linegraphen dar.
+
+\begin{mydef}[Linegraph\index{Linegraph}\index{$L(\cdot)$}]\label{def:Linegraph}
+    Gegeben sei ein Hypergraph $H=(V,\mE)$. Der Graph $L(H)=(\mE,E)$ mit $$E=\{ef\ |\ e,f\in\mE ; e\neq f ; e\cap f\neq\emptyset\}$$ ist dann der \emph{Linegraph} von $H$.
+\end{mydef}
+
+\begin{figure}[htbp]
+    \centering
+    \hspace*{\fill}
+    \subfloat[]{\label{pic:bsp_Linegraph_HG}
+        \begin{tikzpicture}
+            
+            \coordinate (c) at (0,0);
+            \coordinate (lt) at (150:1);
+            \coordinate (lb) at (210:1);
+            \coordinate (lbb) at ($(210:1)+(-90:.5)$);
+            \coordinate (ll) at ($(210:1)+(150:1)$);
+            \coordinate (rt) at (30:1);
+            \coordinate (rr) at ($(0:1.4)$);
+            
+            %\draw[gray] (lt)--(c)--(lb)--(ll)--(lt)--(lb)--(lbb) (c)--(30:1)--(rr);
+            
+            \node[ellipse,thick,draw=clGreen,fit=(rr),inner sep=8pt] (e3) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e3.west) {3};
+                
+            \node[ellipse,thick,draw=clBlue,fit=(e3)(rt)(c),inner sep=1pt] (e1) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e1.north) {1};
+                
+            \node[ellipse,thick,draw=clOrange,fit=(c)(lb)(lt)(ll),inner sep=0pt] (e4) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e4.north) {4};
+                
+            \node[ellipse,thick,draw=clRed,fit=(lb)(lbb),inner sep=7pt] (e5) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e5.north) {5};
+                
+            \node[ellipse,thick,draw=clViolet,fit=(e4)(e5),inner sep=-3pt] (e2) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e2.west) {2};
+                
+            
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+%    \subfloat[]{\includegraphics[width=0.33\textwidth]{bilder/bsp_baumstruktur.png}}
+%    \hspace*{\fill}
+    \subfloat[]{\label{pic:bsp_Linegraph_L}
+        \begin{tikzpicture}
+            
+            \node[nN,fill=clBlue] (1) at ( 0, 0) {}; \node[tlbl] (lbl1) at (1.north) {$1$};
+            \node[nN,fill=clViolet] (2) at (150:1.5) {}; \node[tlbl] (lbl2) at (2.north) {$2$};
+            \node[nN,fill=clGreen] (3) at (0:1.5) {}; \node[rlbl] (lbl3) at (3.east) {$3$};
+            \node[nN,fill=clOrange] (4) at (210:1.5) {}; \node[blbl] (lbl4) at (4.south) {$4$};
+            \node[nN,fill=clRed] (5) at ($(210:1.5)+(150:1.5)$) {}; \node[llbl] (lbl5) at (5.west) {$5$};
+            
+            \draw[thick] (2) -- (4) -- (5) -- (2) -- (1) -- (4)  (1) -- (3);
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \caption[Beispiel für einen Hypergraphen und seinen Linegraphen]{Beispiel für einen Hypergraphen~\subref{pic:bsp_Linegraph_HG} und seinen Linegraphen~\subref{pic:bsp_Linegraph_L}}
+    \label{pic:bsp_Linegraph}
+\end{figure}
+
+
+In Abschnitt~\ref{sec:LinegraphOfHypergraph} werden die Linegraphen von verschiedenen Hypergraphen charakterisiert.
+
+\subsection{Cliquen(hyper)graph}
+Eine Variante, einen Hypergraphen aus einem Graphen $G$ zu erzeugen, ist das Bilden des Cliquenhypergraphen. Dabei wird für jede maximale Clique in $G$ eine Hyperkante erzeugt.
+
+\begin{mydef}[Cliquenhypergraph\index{Cliquenhypergraph}\index{$\mC(\cdot)$}]
+    Es sei $G=(V,E)$ ein Graph. Dessen \emph{Cliquenhypergraph} $\mC(G)=(V,\mE)$ sei dann wie folgt definiert:
+    \[ \mE:= \{ c \ |\ \text{$c$ ist maximale Clique in $G$} \} \]
+\end{mydef}
+
+Erzeugt man für jede maximale Clique statt einer Hyperkante einen Knoten und verbindet diese, falls die entsprechenden Cliquen einen gemeinsamen Knoten in $G$ besitzen, so wird der erzeugt Graph als Cliquengraph bezeichnet.
+
+\begin{mydef}[Cliquengraph\index{Cliquengraph}\index{$K(\cdot)$}]
+    Für einen gegebenen Graphen $G=(V_g,E_g)$ sei sein \emph{Cliquengraph} $K(G)=(V_k,E_k)$ wie folgt definiert:
+    \begin{align*}
+        V_k & := \{ c \ |\ \text{$c$ ist maximale Clique in $G$} \} \\
+        E_k & := \{ cd \ |\ c \cap d \neq \emptyset \}
+    \end{align*}
+\end{mydef}
+
+Wendet man die Definition von Linegraphen auf die von Cliquenhypergraphen an, stellt man fest, dass der Cliquengraph genau der Linegraph eines Cliquenhypergraphen ist.
+
+\begin{Lemma}\label{lem:Cliquegraph}
+    Für jeden Graphen $G$ gilt: $K(G) = L(\mC(G))$\index{Cliquenhypergraph}\index{Linegraph}\index{Cliquengraph}.
+\end{Lemma}
+
+Der Cliquengraph bietet auch eine weitere Möglichkeit, um dually chordale Graphen (siehe Abschnitt~\ref{sec:DuallyChordalGraphs}) zu definieren.
+
+\begin{Theorem}\label{theo:CliqueChorDuallyChor}
+    \index{dually chordal}\index{Cliquengraph}\index{chordal}
+    \cite{duallyChordal}
+    Ein Graph $G$ ist dually chordal genau dann, wenn $G$ der Cliquengraph eines chordalen Graphen ist.
+\end{Theorem}
+
+\section{Eigenschaften}
+Hypergraphen können Eigenschaften besitzen, die üblicherweise bei Graphen nicht betrachtet werden. So stellen Bäume die einzige Graphenklasse dar, welche die beiden nachfolgend vorgestellten Eigenschaften hat.
+
+\subsection{Helly-Eigenschaft}
+Die Helly-Eigenschaft trifft eine Aussage über gemeinsame Knoten von Kanten. Hat ein Hypergraph die Helly-Eigenschaft, dann existiert für jede Menge von Hyperkanten, die sich paarweise schneiden, ein gemeinsamer Knoten, der in jeder der Hyperkanten vorhanden ist.
+
+\begin{mydef}[Helly-Eigenschaft\index{Helly-Eigenschaft}]\label{def:Helly}
+    Ein Hypergraph $H=(V,\mE)$ hat die Helly-Eigenschaft, wenn für alle $\mE^*\subseteq\mE$ gilt:
+    \[ \Big(\forall\,e_1,e_2 \in \mE^*: e_1 \cap e_2 \neq \emptyset\Big) \Rightarrow \bigcap_{e \in \mE^*}e \neq \emptyset \]
+\end{mydef}
+
+Für den Linegraphen $\mL$ eines Hypergraphen $H$ bedeutet die Helly-Eigenschaft, dass es für jede maximale Clique in $\mL$ einen gemeinsamen Knoten der entsprechenden Hyperkanten in $H$ gibt. 
+
+\subsection{Conformalität}
+Conformalität stellt eine zusätzliche Einschränkung für den 2-Section Graphen eines Hypergraphen dar. Ist ein Hypergraph conformal, so gibt es für jede (maximale) Clique in dessen 2-Section Graph auch eine Hyperkante, die alle Knoten der Clique enthält.
+
+\begin{mydef}[conformal\index{Conformalität}\index{Hypergraph!conformal|see{Conformalität}}]\label{def:conformal}
+    Ein Hypergraph $H=(V,\mE)$ ist \emph{conformal}, wenn für jede Clique $K$ mit den Knoten $V_k$ in $2Sec(H)$ gilt:
+    \[ \exists\,e\in\mE\text{ mit } V_k\subseteq e\]
+\end{mydef}
+
+Ähnlich wie die Helly-Eigenschaft lässt sich Conformalität auch über die Knoten benachbarter Kanten beschreiben. Diese Gesetzmäßigkeit ist als \emph{Gilmore Theorem} bekannt.
+
+\begin{Theorem}[Gilmore Theorem\index{Gilmore Theorem}]\label{theo:GilmoreTheorem}\cite{berge1989hypergraphs}
+    \index{Conformalität}
+    Ein Hypergraph $H=(V,\mE)$ ist \emph{conformal} genau dann, wenn für alle 3-elementigen Knotenmengen $\{ e_1, e_2, e_3 \} \subseteq \mE$ ein $e \in \mE$ existiert mit $(e_1 \cap e_2) \cup (e_1 \cap e_3) \cup (e_2 \cap e_3) \subseteq e$.
+\end{Theorem}
+
+Zwar treffen sowohl Conformalität als auch die Helly-Eigenschaft Aussagen über paarweise benachbarte Hyperkanten, jedoch sind sie nicht äquivalent und bedingen auch einander nicht. Abbildung~\ref{pic:bsp_conformalHelly} stellt zwei Hypergraphen dar, von denen einer conformal ist und einer die Helly-Eigenschaft hat.
+
+\begin{figure}[htb]
+    \centering
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_Conf_keineHE}]{
+        \begin{tikzpicture}[thick]
+            
+            \node[nN] (a) at (90:.75) {};
+            \node[nN] (b) at (210:.75) {};
+            \node[nN] (c) at (330:.75) {};
+            
+            %\path[red] node [draw,ellipse,fit=(c) (b)] {};
+            
+            \begin{pgfonlayer}{background}
+                \node [very thick,draw=clRed,ellipse,fill opacity=.5,rotate fit= 60] (ab)
+                      [fit=(a) (b)] {};
+
+                \node [very thick,draw=clLight60Blue,ellipse,fill opacity=.5,rotate fit= 0] (bc)
+                      [fit=(c) (b)] {};
+
+                \node [very thick,draw=clGreen,ellipse,fill opacity=.5,rotate fit= -60] (ac)
+                      [fit=(a) (c)] {};
+
+            \end{pgfonlayer}
+            \begin{pgfonlayer}{lowerBackground}
+                \draw[very thick,clOrange,fill opacity=.5,radius=1.4cm] (0,0) circle;                   
+                %\path[] node [fill=white,ellipse,rotate fit=-30,fit=(a) (b)] {};
+                %\path[] node [fill=white,ellipse,fit=(c) (b)] {};
+                %\path[] node [fill=white,ellipse,rotate fit=30,fit=(a) (c)] {};
+            \end{pgfonlayer}
+
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[\label{pic:bsp_nichtConf_HE}]{
+        \begin{tikzpicture}[thick]
+            
+            \node[nN] (a) at (90:.75) {};
+            \node[nN] (b) at (210:.75) {};
+            \node[nN] (c) at (330:.75) {};
+            \node[nN] (m) at (0,0) {};
+            
+            %\path[red] node [draw,ellipse,fit=(c) (b)] {};
+            
+            \begin{pgfonlayer}{background}
+
+                %\path[rounded corners=.3cm,fill=clLight60Blue,fill opacity=.5]
+                %    ($(b)+3.8637*(195:.3)$) -- ($(c)+3.8637*(-15:.3)$) -- ($(m)+(90:.3)$) --cycle;
+                    
+                \path[very thick,draw=clRed,fill opacity=.5]
+                    ($(m)+(-60:.3)$)  arc [start angle=-60,delta angle=60,radius=.3cm] -- ($(a)+(0:.3)$) 
+                    arc [start angle=0,delta angle=150,radius=.4cm] -- ($(b)+(150:.4866)$) 
+                    arc [start angle=150,delta angle=150,radius=.4cm] -- cycle;
+                    
+                \path[very thick,draw=clGreen,fill opacity=.5]
+                    ($(m)+(180:.3)$)  arc [start angle=180,delta angle=60,radius=.3cm] -- ($(c)+(240:.3)$) 
+                    arc [start angle=240,delta angle=150,radius=.4cm] -- ($(a)+(30:.4866)$) 
+                    arc [start angle=30,delta angle=150,radius=.4cm] -- cycle;
+                    
+                \path[very thick,draw=clLight60Blue,fill opacity=.5]
+                    ($(m)+(60:.3)$)  arc [start angle=60,delta angle=60,radius=.3cm] -- ($(b)+(120:.3)$) 
+                    arc [start angle=120,delta angle=150,radius=.4cm] -- ($(c)+(-90:.4866)$) 
+                    arc [start angle=-90,delta angle=150,radius=.4cm] -- cycle;
+                %\node [fill=clLight60Blue,ellipse,fill opacity=.5,rotate fit= 0] (bc) [fit=(c) (b) (m)] {};
+
+
+            \end{pgfonlayer}
+            \begin{pgfonlayer}{lowerBackground}
+                \fill[white,fill opacity=0,radius=1.4cm] (0,0) circle;                   
+            \end{pgfonlayer}
+
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    
+    \caption[Unterschied von Conformalität und Helly-Eigenschaft]
+    {Unterschied von Conformalität\index{Conformalität} und Helly-Eigenschaft\index{Helly-Eigenschaft}: Der Hypergraph~\subref{pic:bsp_Conf_keineHE} ist conformal, aber erfüllt nicht die Helly-Eigenschaft. Der Hypergraph~\subref{pic:bsp_nichtConf_HE} hingegen erfüllt die Helly-Eigenschaft, aber ist nicht conformal.}
+    
+    \label{pic:bsp_conformalHelly}
+\end{figure}
+
+%\todo{Eventuell zusammenhang 2Sec - Conformal (nötig für Satz~\ref{theo:chordalWkFrei})\\
+%H conformal $\Leftrightarrow$ Jede Clique in 2Sec(H): es gibt Kante in H die ganze Clique enthält}
+%\begin{mydef}[conformal\index{conformal}]
+%Ein Hypergraph $H=(V,\mE)$ ist \emph{conformal}, wenn für jede Clique $K$ mit den Knoten $V_k$ in $2Sec(H)$ gilt:
+%\[ \exists\,e\in\mE\text{ mit } V_k\subseteq e\]
+%\end{mydef}
+
+\section{Azyklische Hypergraphen}
+
+Dieser Abschnitt definiert drei Klassen von azyklischen Hypergraphen. Zusätzlich wird die Graham-Reduktion vorgestellt.
+
+\subsection{$\alpha$-azyklische Hypergraphen}
+Für $\alpha$-azyklische Hypergraphen, die auch als \emph{dual hypertrees} bezeichnet werden, gibt es verschiedene Definitionen. Eine davon bezieht sich auf Conformalität und den 2-Section Graphen.
+\begin{mydef}[$\alpha$-azyklischer Hypergraph\index{$\alpha$-azyklisch}\index{Hypergraph!$\alpha$-azyklisch}\label{def:alphaAzyklisch}]
+    Ein Hypergraph $H$ ist \emph{$\alpha$-azyklisch} genau dann, wenn $H$ conformal und $2Sec(H)$ chordal ist.
+\end{mydef}
+
+Aus der Definition für $\alpha$-azyklische Hypergraphen und für Conformalität folgt nun unmittelbar, dass der Cliquenhypergraph eines chordalen Graphen $\alpha$-azyklisch ist.
+
+\begin{Lemma}\label{lem:ChliqueChordalAlphaAzyk}\cite[Corollary 1.3.2]{brandstaedt1999graph}
+    \index{chordal}\index{Cliquenhypergraph}
+    Ein Graph $G$ ist chordal genau dann, wenn sein Cliquenhypergraph $\mC(G)$ $\alpha$-azyklisch ist.
+\end{Lemma}
+
+Ein nützlicher Aspekt von $\alpha$-azyklischen Hypergraphen ist die \emph{Graham-Reduktion}. Dabei handelt es sich um zwei einfache Eliminationsregeln für einen gegeben Hypergraphen.
+
+\begin{mydef}[Graham-Reduktion\index{Graham Reduktion}\label{def:GrahamReduktion}]
+    Unter der \emph{Graham-Reduktion} versteht man das wiederholte Anwenden der beiden nachfolgenden Regeln auf einen Hypergraphen $H = (V,\mE)$.
+    \begin{enumerate}
+        \item Ist ein Knoten $v$ in genau einer Hyperkante enthalten, dann kann $v$ entfernt werden.
+        \item Ist eine Hyperkante $e$ vollständig in einer anderen Hyperkante $f$ enthalten ($e \subseteq f$), kann $e$ entfernt werden.
+    \end{enumerate}
+    
+    Führt die Reduktion dazu, dass $H$ nur noch eine leere Kante besitzt ($\mE=\{\emptyset\}$), so sagt man, die Reduktion war \emph{erfolgreich}.
+\end{mydef}
+
+\begin{Theorem}\label{theo:AlphaAzykGraham} \cite{Beeri1983}
+    \index{Graham Reduktion}
+    Ein Hypergraph~$H$ ist $\alpha$-azyklisch genau dann, wenn die Graham-Reduktion erfolgreich ist für $H$.
+\end{Theorem}
+
+Aufgrund von Satz~\ref{theo:AlphaAzykGraham} ist die Graham-Reduktion nicht nur eine Eliminationsregel für $\alpha$-azyklische Hypergraphen, sondern auch eine Konstruktionsregel.
+
+\subsection{$\beta$-azyklische Hypergraphen}
+Erweitert man die Bedingungen für einen $\alpha$-azyklischen Hypergraphen so, dass auch jede Teilmenge der Hyperkanten sie erfüllt, so erhält man die Klasse der $\beta$-azyklischen Hypergraphen.
+
+\begin{mydef}[$\beta$-azyklischer Hypergraph\index{$\beta$-azyklisch}\index{Hypergraph!$\beta$-azyklisch}, \cite{Fagin1983}]
+    Ein Hypergraph $H=(V,\mE)$ ist \emph{$\beta$-azyklisch} genau dann, wenn für alle $\mE' \subseteq \mE$ gilt: $\mE'$ ist $\alpha$-azyklisch.
+\end{mydef}
+
+$\beta$-azyklische Hypergraphen werden auch als \emph{totally balanced} bezeichnet. Sie erfüllen die Helly-Eigenschaft \cite{berge1989hypergraphs}.
+      
+\subsection{$\gamma$-azyklische Hypergraphen}
+Eine Teilmenge der $\beta$-azyklischen Hypergraphen sind die $\gamma$-azyklischen. Sie definieren sich über einen nicht erlaubten Teilgraphen, einen sogenannten $\gamma$-cycle.
+
+\begin{mydef}[$\gamma$-cycle\index{$\gamma$-cycle}, \cite{Fagin1983}]\label{def:GammyCycle}
+    Ein \emph{$\gamma$-cycle} in einem Hypergraphen $H$ ist eine Folge $(v_1,e_1,\ldots,v_k,e_k)$ mit $k \geq 3$, welche die folgenden Bedingungen erfüllt:
+    \begin{enumerate}
+        \item $v_1,\ldots, v_k$ sind paarweise verschiedene Knoten in $H$.
+        \item $e_1,\ldots, e_k$ sind paarweise verschiedene Hyperkanten in $H$ und $e_{k+1}=e_1$.
+        \item $\forall\, i\ (1 \leq i \leq k): v_i \in e_i \cap e_{i+1}$
+        \item\label{BedingungDefGammaCycle} $\forall\, i\ (1 \leq i < k): \forall\, j\ (j \neq i,i+1): v_i \notin e_j$
+    \end{enumerate}
+\end{mydef}
+
+Bedingung~\ref{BedingungDefGammaCycle} in Definition~\ref{def:GammyCycle} bedeutet, dass alle Knoten~$v_i$ nur in den Hyperkanten~$e_i$ und $e_{i+1}$ sind, jedoch nicht der Knoten~$v_k$. Dieser darf auch in den anderen Hyperkanten enthalten sein. Abbildung~\ref{pic:bsp_GammaCycle} gibt ein Beispiel für einen $\gamma$-cycle.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        
+        \node[nN] (v1) at (150:1.5) {}; \node[blbl] (lbl1) at (v1.south) {$v_1$};
+        \node[nN] (v2) at (30:1.5) {};  \node[blbl] (lbl2) at (v2.south) {$v_2$};
+        \node[nN] (v3) at (0,0) {};     \node[blbl] (lbl3) at (v3.south) {$v_3$};
+        
+        %\draw[very thick,clLight60Blue,opacity=.2,radius=2.5cm] (90:1.5) circle;
+        %\draw[very thick,clLight60Blue,opacity=.2,radius=2cm] (-30:1.5) circle;
+        %\draw[very thick,clLight60Blue,opacity=.2,radius=2cm] (210:1.5) circle;
+        
+        %\draw [black] (210:1.5) -- ($(210:1.5)+(125:2)$) -- ($(210:1.5)+(-5:2)$) -- cycle;
+        %\draw [clRed] (90:1.5) -- ($(90:1.5)+(193:2.5)$) -- ($(90:1.5)+(347:2.5)$) -- cycle;
+        %\draw [clGreen] (-30:1.5) -- ($(-30:1.5)+(55:2)$) -- ($(-30:1.5)+(185:2)$) -- cycle;
+        
+%        \draw[thick,clBlue]
+%            ($(90:1.5)+(193:2.5)+(13:.5)+(90:.5) $)
+%            arc[start angle=90,end angle=193,radius=.5]
+%            arc[start angle=193,end angle=347,radius=2.5]
+%            arc[start angle=-13,end angle=90,radius=.5] -- cycle;
+
+%        \draw[thick,clBlue]
+%            ($(90:1.75)+(200:2.5)+(20:.5)+(90:.5) $)
+%            arc[start angle=90,end angle=200,radius=.5]
+%            arc[start angle=200,end angle=340,radius=2.5]
+%            arc[start angle=-20,end angle=90,radius=.5] -- cycle;
+
+%        \draw[thick,clBlue]
+%            ($(90:1.5)+(193:2.5)$) arc[start angle=193,end angle=347,radius=2.5];
+%
+%        \draw[thick,clBlue]
+%            ($(90:1.5)+(193:2.5)$) .. 
+%            controls ($(90:1.5)+(193:2.5)+(103:1)$) and ($(90:1.5)+(347:2.5)+(77:1)$) .. 
+%            node[tlbl,black] {$e_2$}
+%            ($(90:1.5)+(347:2.5)$);
+            
+%        \draw[thick,clGreen]
+%            ($(-30:1.5)+(55:2)+(-125:.5)+(-60:.5) $)
+%            arc[start angle=-60,end angle=55,radius=.5]
+%            arc[start angle=55,end angle=185,radius=2]
+%            arc[start angle=185,end angle=300,radius=.5] -- cycle;
+
+%        \draw[thick, clGreen]
+%            ($(-30:1.5)+(55:2)$) arc[start angle=55,end angle=185,radius=2];
+%             
+%        \draw[thick, clGreen]
+%            ($(-30:1.5)+(55:2)$) .. 
+%            controls ($(-30:1.5)+(55:2)+(-35:1.5)$) and ($(-30:1.5)+(185:2)+(275:1.5)$) .. 
+%            node[lbl,black,anchor=north west] {$e_3$}
+%            ($(-30:1.5)+(185:2)$);
+            
+%        \draw[thick,clOrange]
+%            ($(210:1.5)+(-5:2)+(175:.5)+(-120:.5) $)
+%            arc[start angle=-120,end angle=-5,radius=.5]
+%            arc[start angle=-5,end angle=125,radius=2]
+%            arc[start angle=125,end angle=240,radius=.5] -- cycle;
+
+%        \draw[thick,clOrange]
+%            ($(210:1.5)+(-5:2)$) arc[start angle=-5,end angle=125,radius=2];
+%            
+%        \draw[thick,clOrange]
+%            ($(210:1.5)+(-5:2)$) .. 
+%            controls ($(210:1.5)+(-5:2)+(-95:1.5)$) and ($(210:1.5)+(125:2)+(215:1.5)$) .. 
+%            node[lbl,black,anchor=north east] {$e_1$}
+%            ($(210:1.5)+(125:2)$);
+            
+%        \fill [gray]
+%            ($(90:1.5)+(193:2.5)+(103:1)$) circle (2pt)
+%            ($(90:1.5)+(347:2.5)+(77:1)$) circle (2pt)
+%            ($(-30:1.5)+(55:2)+(-35:1.5)$) circle (2pt)
+%            ($(-30:1.5)+(185:2)+(275:1.5)$) circle (2pt)
+%            ($(210:1.5)+(-5:2)+(-95:1.5)$) circle (2pt)
+%            ($(210:1.5)+(125:2)+(215:1.5)$) circle (2pt);
+         
+         
+         \node[ellipse,thick,draw=clOrange,fit=(v3)(v1),rotate fit=-30,inner sep=5pt] (e1) {};
+         \node[lbl,black,inner sep=.75pt,fill=white,circle] at (e1.south) {$e_1$};
+
+         \node[ellipse,thick,draw=clGreen,fit=(v3)(v2),rotate fit=30,inner sep=5pt] (e3) {};
+         \node[lbl,black,inner sep=.75pt,fill=white,circle] at (e3.south) {$e_3$};
+         
+         \node[ellipse,thick,draw=clBlue,fit=(e3)(e1),inner sep=5pt] (e2) {};
+         \node[lbl,black,inner sep=.75pt,fill=white,circle] at (e2.south) {$e_2$};
+         %\draw (current bounding box.south west) -- (current bounding box.south east) -- (current bounding box.north east) -- (current bounding box.north west) -- cycle;
+    \end{tikzpicture}
+    \caption{Beispiel für einen $\gamma$-cycle}
+    \label{pic:bsp_GammaCycle}
+\end{figure}
+
+\begin{mydef}[$\gamma$-azyklischer Hypergraph\index{$\gamma$-azyklisch}\index{Hypergraph!$\gamma$-azyklisch}, \cite{Fagin1983}]
+    Ein Hypergraph ist \emph{$\gamma$-azyklisch} genau dann, wenn er keinen $\gamma$-cycle enthält.
+\end{mydef}
+
+Für azyklische Hypergraphen gilt die folgende Hierarchie:
+
+\begin{Theorem}\label{theo:AzykHiera}\cite{Fagin1983}
+    \index{Hypergraph!$\gamma$-azyklisch}\index{Hypergraph!$\beta$-azyklisch}\index{Hypergraph!$\alpha$-azyklisch}
+    $\gamma$-azyklisch $\subset$ $\beta$-azyklisch $\subset$ $\alpha$-azyklisch
+\end{Theorem}
+
+
+\section{Linegraphen von azyklischen Hypergraphen}\label{sec:LinegraphOfHypergraph}
+
+Dieser Abschnitt beschäftigt sich mit der Charakterisierung der Linegraphen von $\alpha$-azyklischen Hypergraphen und deren Unterklassen ($\beta$- und $\gamma$-azyklisch).
+
+
+Zuerst wird gezeigt, dass die Klasse der Linegraphen von $\alpha$-azyklischen Hypergraphen genau die Klasse der dually chordalen Graphen ist. Dazu seien die folgenden Aussagen wiederholt:
+\begin{itemize}
+
+    \item $K(G) = L(\mC(G))$ (Lemma~\ref{lem:Cliquegraph})
+    
+    \item $G$ ist chordal $\Leftrightarrow$ $\mC(G)$ ist $\alpha$-azyklisch (Lemma~\ref{lem:ChliqueChordalAlphaAzyk})
+    
+    \item $G$ ist dually chordal $\Leftrightarrow$ $G$ ist der Cliquengraph eines chordalen Graphen. (Satz~\ref{theo:CliqueChorDuallyChor})
+    
+    \item $H$ ist $\alpha$-azyklisch $\Leftrightarrow$ Die Graham-Reduktion ist erfolgreich für $H$. (Satz~\ref{theo:AlphaAzykGraham})
+    
+\end{itemize}
+
+\begin{Lemma}\label{lem:AlphaAzyklDuallyChordal}
+    \index{Hypergraph!$\gamma$-azyklisch}\index{chordal!dually}\index{dually chordal}
+    $H$ ist $\alpha$-azyklisch $\Rightarrow$ $L(H)$ ist dually chordal.
+\end{Lemma}
+
+\begin{Proof}
+    $H=(V,\mE)$ ist $\alpha$-azyklisch.    Man füge nun in jede Hyperkante $e\in\mE$ einen Knoten $v_e$ so ein, dass $v_e$ nur in $e$ enthalten ist. Der so entstehende Hypergraph $H'$ ist weiterhin $\alpha$-azyklisch (Graham-Reduktion).
+    
+    Es gilt, dass $L(H)\sim L(H')$, da das Einfügen der Knoten nichts an der Nachbarschaft der Hyperkanten geändert hat.
+    
+    Aufgrund der eingefügten Knoten $v_e$ gibt es für jede Hyperkante $e$ eine maximale Clique in $2Sec(H')$. Angenommen es gäbe eine weitere maximale Clique $K$, dann wären ihre Knoten aufgrund der Confomalität von $H'$ auch in einer Hyperkante $e$ vorhanden. $K$ ist dann jedoch entweder nicht maximal, oder keine weitere maximale Clique. Somit gilt: $\mC(2Sec(H'))\sim H'$.
+    
+    Es sei nun $G := 2Sec(H')$. $G$ ist chordal und $\mC(G) \sim H'$. Daraus folgt, dass $L(H')\sim L(\mC(G))=K(G)$. Da $G$ chordal ist, ist somit $K(G)$ dually chordal. Also gilt $L(H)\sim L(H')$ ist dually chordal.
+    \qed
+\end{Proof}
+
+\begin{Lemma}\label{lem:DuallyChordalAlphaAzykl}
+    Für alle dually chordalen Graphen $G$ existiert ein $\alpha$-azyklischer Hypergraph $H$ mit $L(H)\sim G$.
+\end{Lemma}
+
+\begin{Proof}
+    $G$ ist dually chordal. Das heißt, es existiert ein chordaler Graph $G'$, so dass $K(G')\sim G$. Es gilt $K(G') = L(\mC(G'))$. Es sei nun $H:=\mC(G')$. $H$ ist $\alpha$-azyklisch. Da $L(H) = L(\mC(G')) = K(G')$ ist und $K(G') \sim G$, gilt auch $L(H) \sim G$.
+    \qed
+\end{Proof}
+
+Aus den Lemmata~\ref{lem:AlphaAzyklDuallyChordal} und \ref{lem:DuallyChordalAlphaAzykl} folgt nun unmittelbar Satz~\ref{theo:AlphaAzyklDuallyChordal}:
+
+\begin{Theorem}\label{theo:AlphaAzyklDuallyChordal}
+    Ein Graph ist dually chordal genau dann, wenn er der Linegraph eines $\alpha$-azyklischen Hypergraphen ist.
+\end{Theorem}
+
+In Verbindung mit Satz~\ref{theo:hereDuCh_strCh} (S.~\pageref{theo:hereDuCh_strCh}) ergibt sich nun für $\beta$-azyklische Hypergraphen, dass diese strongly chordal sind.
+
+\begin{Theorem}\label{theo:BetaLineStronglyChordal}
+    Die Linegraphen von $\beta$-azyklischen Hypergraphen sind strongly chordal.
+\end{Theorem}
+
+\begin{Proof}
+    Es seien $H=(V,\mE)$ ein $\beta$-azyklischer Hypergraph und $\mL=L(H)=(\mE,E)$ sein Linegraph.
+    
+    Per Definition gilt, dass alle Teilmengen $\mE'$ der Hyperkanten von $H$ ($\mE' \subseteq \mE$) einen $\alpha$-azyklischen Hypergraphen bilden. Übertragen auf den Linegraphen bedeutet dies, dass jeder induzierte Teilgraph $\mL[\mE']$ dually chordal ist.
+    
+    Es gilt, dass ein Graph strongly chordal ist, wenn jeder induzierte Teilgraph von $G$ dually chordal ist (Satz~\ref{theo:hereDuCh_strCh}). Somit ist $\mL$ ebenfalls strongly chordal.
+    \qed
+\end{Proof}
+
+Als nächstes wird gezeigt, dass die Linegraphen von $\gamma$-azyklischen Hypergraphen distanzerblich chordal sind. Dazu werden folgende Aussagen verwendet:
+
+\begin{itemize}
+    \item $H$ ist $\gamma$-azyklisch $\Rightarrow$ $H$ ist $\beta$-azyklisch. (Satz~\ref{theo:AzykHiera})
+    \item $\beta$-azyklische Hypergraphen erfüllen die Helly-Eigenschaft. \cite{berge1989hypergraphs}
+    \item $G$ ist chordal und Gem-frei $\Rightarrow$ $G$ ist distanzerblich. (Lemma~\ref{lem:GemFreeChordalDistanzerblich}, S.~\pageref{lem:GemFreeChordalDistanzerblich})
+\end{itemize}
+
+\begin{Theorem}\label{theo:GammaLineGrpah}
+    Die Linegraphen von $\gamma$-azyklischen Hypergraphen sind distanzerblich chordal.
+\end{Theorem}
+
+\begin{Proof}
+    Es seien $H$ ein $\gamma$-azyklischer Hypergraph und $\mL=L(H)$ sein Linegraph.
+    
+    Da jeder $\gamma$-azyklische Hypergraph auch $\beta$-azyklisch ist, ist $\mL$ strongly chordal. $\mL$ ist somit distanzerblich, wenn $\mL$ Gem-frei ist.
+    
+    Angenommen, $\mL$ enthalte einen Gem $G$ mit den Knoten $e_1$, $e_2$ und $e_3$. Außerdem seien $K_1$, $K_2$ und $K_3$ die maximalen Cliquen in $G$. Abbildung~\ref{pic:GemGinL} stellt dies dar.
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{tikzpicture}
+        
+            \node[nN,fill=clBlue] (e2) at (0,0) {}; \node[blbl] at (e2.south) {$e_2$};
+            \node[nN] (e0) at (180:1.5) {};
+            \node[nN,fill=clOrange] (e1) at (120:1.5) {}; \node[tlbl] at (e1.north) {$e_1$};
+            \node[nN,fill=clGreen] (e3) at (60:1.5) {}; \node[tlbl] at (e3.north) {$e_3$};
+            \node[nN] (e4) at (0:1.5) {};
+            
+            \draw[thick] (e1) -- (e2) -- (e3) -- (e4) -- (e2) -- (e0) -- (e1) -- (e3);
+            
+            \node [lbl] at (150:0.866)              {$K_1$};
+            \node [lbl] at (30:0.866)              {$K_2$};
+            \node [lbl] at (90:0.866)              {$K_3$};
+
+        \end{tikzpicture}
+        \caption{Der Gem $G$}
+        \label{pic:GemGinL}
+    \end{figure}
+
+    
+    Aufgrund der Helly-Eigenschaft gibt es für jede Clique~$K_i$ in $G$ einen Knoten~$k_i$ in $H$, der in den Hyperkanten enthalten ist, welche die entsprechende Clique in $\mL$ bilden. Somit gilt: $k_1 \in e_1 \cap e_2$, $k_2 \in e_2 \cap e_3$ und $k_3 \in e_1 \cap e_2 \cap e_3$. Abbildung~\ref{pic:GemGinH} stellt dies dar.
+    
+    \begin{figure}[htbp]
+        \centering
+        \begin{tikzpicture}
+        
+        \node[nN] (v1) at (-150:1.5) {}; \node[blbl] (lbl1) at (v1.south) {$k_1$};
+        \node[nN] (v2) at (-30:1.5) {};  \node[blbl] (lbl2) at (v2.south) {$k_2$};
+        \node[nN] (v3) at (0,0) {};     \node[blbl] (lbl3) at (v3.south) {$k_3$};         
+         
+         \node[ellipse,thick,draw=clOrange,fit=(v3)(v1),rotate fit=30,inner sep=5pt] (e1) {};
+         \node[lbl,black,inner sep=.75pt,fill=white,circle] at (e1.north) {$e_1$};
+
+         \node[ellipse,thick,draw=clGreen,fit=(v3)(v2),rotate fit=-30,inner sep=5pt] (e3) {};
+         \node[lbl,black,inner sep=.75pt,fill=white,circle] at (e3.north) {$e_3$};
+         
+         \node[ellipse,thick,draw=clBlue,fit=(e3)(e1),inner sep=3pt] (e2) {};
+         \node[lbl,black,inner sep=.75pt,fill=white,circle] at (e2.south) {$e_2$};
+
+        \end{tikzpicture}
+        \caption[Der Gem $G$ in $H$]{Der Gem $G$ in $H$ -- Es wurden nur zu drei der Knoten aus $G$ die entsprechenden Hyperkanten dargestellt.}
+        \label{pic:GemGinH}
+    \end{figure}
+
+    $(k_1,e_1,k_2,e_2,k_3,e_3)$ bildet nun einen $\gamma$-cycle. Somit kann $\mL$ keinen Gem enthalten.
+    \qed    
+    
+\end{Proof}
+
+\subsection{Charakterisierung mittels Graham-Reduktion}
+Eine weitere Möglichkeit, die Linegraphen von $\alpha$-azyklischen Hypergraphen zu charakterisieren, ergibt sich aus der Graham-Reduktion. Als Konstruktionsregel angewendet besteht die Graham-Reduktion aus zwei Regeln:
+\begin{enumerate}
+	\item \label{case:GrahamConstrVertex} Einfügen eines Knotens in genau eine Hyperkante
+	\item \label{case:GrahamConstrEdge} Einfügen einer Hyperkante in eine bereits bestehende
+\end{enumerate}
+
+Regel~\ref{case:GrahamConstrVertex} ist für den Linegraphen nicht relevant. Der hinzugefügte Knoten ist nur in genau einer Hyperkante enthalten. Somit haben sich die Nachbarschaften der Kanten durch das Einfügen nicht verändert.
+
+Aus Regel~\ref{case:GrahamConstrEdge} hingegen ergibt sich für die Hyperkanten eine (gerichtete) Baumstruktur, welche die Reihenfolge darstellt, mit der die Hyperkanten eingefügt wurden. Die Wurzel ist dabei die erste Hyperkante und Blätter die zuletzt eingeführten Hyperkanten. Abbildung~\ref{pic:bsp_BaumstrukturGraham} stellt dies an einem Beispiel dar.
+
+\begin{figure}[htbp]
+    \centering
+    \hspace*{\fill}
+    \subfloat[]{\label{pic:bsp_BaumstrukturGraham_HG}
+        \begin{tikzpicture}
+            
+            \coordinate (c) at (0,0);
+            \coordinate (lt) at (150:1);
+            \coordinate (lb) at (210:1);
+            \coordinate (lbb) at ($(210:1)+(-90:.5)$);
+            \coordinate (ll) at ($(210:1)+(150:1)$);
+            \coordinate (rt) at (30:1);
+            \coordinate (rr) at ($(0:1.4)$);
+            
+            %\draw[gray] (lt)--(c)--(lb)--(ll)--(lt)--(lb)--(lbb) (c)--(30:1)--(rr);
+            
+            \node[ellipse,thick,draw=clGreen,fit=(rr),inner sep=8pt] (e3) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e3.west) {3};
+                
+            \node[ellipse,thick,draw=clBlue,fit=(e3)(rt)(c),inner sep=1pt] (e1) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e1.north) {1};
+                
+            \node[ellipse,thick,draw=clOrange,fit=(c)(lb)(lt)(ll),inner sep=0pt] (e4) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e4.north) {4};
+                
+            \node[ellipse,thick,draw=clRed,fit=(lb)(lbb),inner sep=7pt] (e5) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e5.north) {5};
+                
+            \node[ellipse,thick,draw=clViolet,fit=(e4)(e5),inner sep=-3pt] (e2) {};
+                \node[lbl,black,inner sep=2pt,fill=white,circle] at (e2.west) {2};
+                
+            
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \subfloat[]{\label{pic:bsp_BaumstrukturGraham_T}
+        \begin{tikzpicture}
+        [lbl/.style={font=\small},
+         llbl/.style={left,lbl},rlbl/.style={lbl,right},tlbl/.style={lbl,above}]
+            
+            \node[nN] (1) at ( 0, 0) {}; \node[tlbl] (lbl1) at (1.north) {$1$};
+            \node[nN] (2) at (-1,-1) {}; \node[llbl] (lbl2) at (2.west) {$2$};
+            \node[nN] (3) at ( 1,-1) {}; \node[rlbl] (lbl3) at (3.east) {$3$};
+            \node[nN] (4) at (-2,-2) {}; \node[llbl] (lbl4) at (4.west) {$4$};
+            \node[nN] (5) at ( 0,-2) {}; \node[rlbl] (lbl5) at (5.east) {$5$};
+  
+            \begin{pgfonlayer}{background}
+                \foreach \c/\p in {4/2,5/2,2/1,3/1}
+                {
+                    \draw[->,very thick,clBlue,decoration={snake,amplitude=1},decorate] (\c.center) -- (\p);
+                }
+            \end{pgfonlayer}
+        \end{tikzpicture}
+    }
+    \hspace*{\fill}
+    \caption[Beispiel für die Baumstruktur der Graham-Reduktion]
+    {Beispiel für die Baumstruktur der Graham-Reduktion: Der Hypergraph~\subref{pic:bsp_BaumstrukturGraham_HG} kann erzeugt werden, indem die Hyperkanten in der Reihenfolge ihrer Nummerierung ineinander eingefügt werden ($2$ in $1$, $3$ in $1$, $4$ in $2$, $5$ in $2$). Der Baum~\subref{pic:bsp_BaumstrukturGraham_T} gibt diese Ordnung wieder.}
+    \label{pic:bsp_BaumstrukturGraham}
+\end{figure}
+
+Ein solcher Baum~$T$ ist nun ein erster Ansatz für den gesuchten Linegraphen. Zwar ist $T$ ein Spannbaum des gesuchten Linegraphen, allerdings werden nicht alle möglichen Nachbarschaften der Hyperkanten wiedergegeben.
+
+Zwei Knoten~$a$ und $b$ sind benachbart in einem Linegraphen, wenn ihre entsprechenden Hyperkanten einen gemeinsamen Knoten~$v$ besitzen. Die Graham-Reduktion erlaubt das Einfügen von Knoten jedoch nur in genau eine Hyperkante. Alle anderen Knoten werden geerbt. Eine Hyperkante kann dabei Knoten nur von der Hyperkante erben, in die sie eingefügt wurde. Daraus ergeben sich nun die zwei folgenden Möglichkeiten, wenn $v$ sowohl in $a$ als auch in $b$ ist:
+
+\begin{enumerate}
+    \item \label{case:a_in_b} $a$ wurde in $b$ eingefügt oder umgekehrt.
+    \item \label{case:ab_in_e} Es gibt einen gemeinsamen Elternknoten $e$ in $T$, wobei $v$ in die entsprechende Hyperkante eingefügt wurde.
+\end{enumerate}
+
+Für den Fall~\ref{case:ab_in_e} bedeutet dies, dass auch alle Hyperkanten, deren Knoten auf dem Pfad (in $T$) von $e$ zu $a$ und von $e$ zu $b$ liegen, den Knoten $v$ besitzen. Andernfalls ließe sich $v$ nicht von $e$ auf $a$ und $b$ vererben. Somit sind $a$ und $b$ auch mit allen Knoten auf diesem Pfad benachbart. Abbildung~\ref{pic:bsp_NachbarschaftPfad} stellt dies dar.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+       
+       \foreach \name/\ang in {a/210,a_t/170,e_l/130,e/90,e_r/50,b_t/10,b/-30}
+       {
+           \node[nN] (\name) at (\ang:2cm) {};
+       }
+    
+       \node[llbl] (lbla) at (a.west) {$a$};
+       \node[rlbl] (lblb) at (b.east) {$b$};
+       \node[tlbl] (lble) at (e.north) {$e$};
+       
+       \begin{pgfonlayer}{background}
+           \foreach \name in {e_l,e,e_r,b_t,b}
+           {
+               \draw (a.center) -- (\name.center);
+           }
+
+           \foreach \name in {a,a_t,e_l,e,e_r}
+           {
+               \draw (b.center) -- (\name.center);
+           }
+
+           \foreach \f/\t in {a/a_t,b/b_t,e_l/e,e_r/e}
+           {
+               \draw[->,very thick,clBlue,decoration={snake,amplitude=1},decorate]
+                   (\f.center) -- (\t);
+           }
+            
+           \foreach \f/\t in {a_t/e_l,b_t/e_r}
+           {
+               \draw[->,dotted,very thick,clBlue,decoration={snake,amplitude=1},decorate]
+                   (\f.center) -- (\t);
+           }
+           
+           \draw[->,thick,clDark25Green] (100:2.35cm) arc[start angle=100,end angle=195,radius=2.35cm];
+           \draw[->,thick,clDark25Green] (80:2.35cm) arc[start angle=80,delta angle=-95,radius=2.35cm];
+           \node[lbl,above left] (lblvl) at (147.5:2.35cm) {$v$};
+           \node[lbl,above right] (lblvr) at (32.5:2.35cm) {$v$};
+            
+       \end{pgfonlayer}
+
+    
+    \end{tikzpicture}
+    \caption[Die Nachbarschaft zweier Hyperkanten entlang des Spannbaums]
+    {Die Nachbarschaft der Hyperkanten $a$ und $b$ entlang des Spannbaums (blau gewellt): Der Knoten $v$ wird entlang des Spannbaums von $e$ auf $a$ und $b$ vererbt (grün). Somit sind $a$ und $b$ auch mit allen Hyperkanten entlang dieser Pfade benachbart.}
+    \label{pic:bsp_NachbarschaftPfad}
+\end{figure}
+
+Entsprechend der obigen Argumentation ergibt sich nun Definition~\ref{def:aLGraph} für die Linegraphen von $\alpha$-azyklischen Hypergraphen.
+
+\begin{mydef}[Linegraph eines $\alpha$-azyklischen Hypergraphen]\label{def:aLGraph}    
+    Es sei $P_T(u,v)$ die Menge der Knoten auf dem Pfad von $u$ nach $v$ in $T$ ($u,v \notin P_T(u,v)$).
+    
+    Ein Graph $G=(V,E)$ ist der Linegraph eines $\alpha$-azyklischen Hypergraphen genau dann, wenn $G$ einen Spannbaum $T$ besitzt, so dass für alle Kanten $uv \in E$ gilt:
+    \[ \forall\, w \in P_T(u,v):uw, vw \in E \]    
+\end{mydef}
+
+Es ist nun zu beweisen, dass die Graphen, welche die Definition~\ref{def:aLGraph} erfüllen, genau die Linegraphen der $\alpha$-azyklischen Hypergraphen sind. Jedoch ist bereits bekannt, dass es sich dabei um die dually chordalen Graphen handelt (Satz~\ref{theo:AlphaAzyklDuallyChordal}). Für dually chordale Graphen ist außerdem eine Definition bekannt, die auf einem Spannbaum beruht (Satz~\ref{theo:DuallyChordalSpanningTree}, S.~\pageref{theo:DuallyChordalSpanningTree}). Deswegen wird an dieser Stelle lediglich gezeigt, dass beide Definitionen äquivalent sind.
+
+\begin{Theorem}\label{theo:SpanningTree}
+    Es seien $G=(V,E)$ ein Graph sowie $T$ ein Spannbaum von $G$. Außerdem sei $P_{uv}$ die Menge der Knoten auf dem Pfad von $u$ nach $v$ in $T$ ($u,v \notin P_{uv}$).
+    
+    Die folgenden Aussagen sind äquivalent:
+    \begin{enumerate}
+        \item \label{case:CliqueInduceT} Jede maximale Clique in $G$ induziert einen Teilbaum von $T$.
+        \item \label{case:PuvT} Für alle Kanten $uv \in E$ gilt: $\forall\, w \in P_{uv}:uw, vw \in E$
+    \end{enumerate}
+\end{Theorem}
+
+\begin{Proof}
+    Es sei $\mK \subseteq V$ eine maximale Clique in $G$ mit den Knoten~$u$ und $v$.
+    
+    \textbf{\boldmath\ref{case:CliqueInduceT} $\Rightarrow$ \ref{case:PuvT}:} Die Clique~$\mK$ induziert einen Teilbaum von $T$. Somit gilt, dass $P_{uv} \subseteq \mK$. Folglich sind auch alle Knoten $w \in P_{uv}$ mit $u$ und $v$ verbunden. Andernfalls wäre $\mK$ keine Clique.
+    
+    \textbf{\boldmath\ref{case:CliqueInduceT} $\Leftarrow$ \ref{case:PuvT}:} Angenommen, $\mK$ induziert keinen Teilbaum von $T$. Dann existiert ein Knoten~$w$, der in $P_{uv}$ liegt, jedoch nicht in $\mK$. Da $\mK$ maximal ist, gibt es einen Knoten $k \in \mK$, der nicht mit $w$ verbunden ist.
+    
+    Die Knoten $u$ und $v$ sind mit $k$ verbunden (alle drei sind in $\mK$). Für die entsprechenden Pfade $P_{uk}$ und $P_{vk}$ gilt nun, dass $w$ nicht auf diesen Pfaden liegt ($w \notin P_{uk} \cup P_{vk}$). Andernfalls wäre $k$ mit $w$ verbunden. Abbildung~\ref{pic:ProofSpanningTree} stellt dies dar.
+    
+    \begin{figure}[htbp]
+        \centering
+        \begin{tikzpicture}
+            \def\len{1.5}
+            \node[nN] (k) at ($0.5*(-90:\len)$) {}; \node[tlbl] (lbl_k) at (k.north) {$k$};
+            \node[nN] (v) at (0:\len) {}; \node[rlbl] (lbl_v) at (v.east) {$v$};
+            \node[hN] (vl) at (0:0.7*\len) {};
+            \node[hN] (ur) at (180:0.7*\len) {};
+            \node[nN] (u) at (180:\len) {}; \node[llbl] (lbl_u) at (u.west) {$u$};
+            
+            \node[nN] (w) at ($0.75*(90:\len)$) {};  \node[tlbl] (lbl_w) at (w.north) {$w$};
+            
+            
+            %\node[lbl,inner sep=2pt,fill=white,circle] (Puk) at (210:\len) {$P_{uk}$};
+            %\node[lbl,inner sep=2pt,fill=white,circle] (Pvk) at (-30:\len) {$P_{vk}$};
+            
+            %\draw (u)--(v)--(k)--(u);
+
+            \begin{pgfonlayer}{background}
+            \node[ellipse,very thick,draw=clGreen,fit=(lbl_u)(lbl_v)(k),inner sep=0pt] (clique) {};
+                \draw[Tedge] (u.center)--(ur.center);
+                \draw[Tedge] (ur.center)--(w.center);
+                \draw[Tedge] (w.center)--(vl.center);
+
+                \draw[Tedge] (k.center)--(ur.center);
+
+                \draw[Tedge] (vl.center)--(k.center);
+                \draw[Tedge] (v.center)--(vl.center);
+            \end{pgfonlayer}
+            \node[lbl,inner sep=2pt,fill=white,circle] at (clique.east) {$\mK$};
+        \end{tikzpicture}
+        \caption[Skizze für den Beweis von Satz~\ref{theo:SpanningTree}]{Skizze für den Beweis von Satz~\ref{theo:SpanningTree}. Die Knoten~$k$, $u$ und $v$ liegen in der Clique~$\mK$ (grün). Die blau gewellten Kanten sind Pfade im Spannbaum~$T$.}
+        \label{pic:ProofSpanningTree}
+    \end{figure}
+
+    Es gibt nun in $T$ zwei mögliche Pfade von $u$ nach $v$: Zum einen $P_{uv}$ über $w$ und zum anderen $P_{uk}$ und $P_{vk}$. Somit ist $T$ kein Baum. Dies steht im Widerspruch zur Voraussetzung.
+    \qed
+\end{Proof}
+
+\subsection{Zusammenfassung der Definitionen}
+
+Es folgt nun eine Zusammenfassung der Charakterisierungen für die Linegraphen von $\alpha$-azyklischen Hypergraphen.
+
+\begin{Theorem}\label{theo:duallyChordalChar}
+    Es seien $G=(V,E)$ ein Graph und $P_T(u,v)$ die Menge der Knoten auf dem Pfad von $u$ nach $v$ in $T$ ($u,v \notin P_T(u,v)$).
+
+    Die folgenden Aussagen sind äquivalent:
+    \begin{enumerate}
+        \item \label{case:G_dually} $G$ ist dually chordal.
+        \item \label{case:G_maxNeigh} $G$ hat eine maximale Nachbarschaftsordnung.
+        \item \label{case:G_chordalClique} $G$ ist der Cliquengraph eines chordalen Graphen.
+        \item \label{case:G_alphaLine} $G$ ist der Linegraph eines $\alpha$-azyklischen Hypergraphen.
+        \item \label{case:G_SpanningClique} $G$ besitzt einen Spannbaum $T$, so dass jede maximale Clique in $G$ einen Teilbaum von $T$ induziert.
+        \item \label{case:G_SpanningPath} $G$ besitzt einen Spannbaum $T$, so dass für alle Kanten $uv \in E$ gilt: $\forall\, w \in P_T(u,v):uw, vw \in E$.
+    \end{enumerate}
+    
+\end{Theorem}
+
+\begin{Proof}
+
+    %\todo{Einführungssatz}
+    
+    \ref{case:G_dually} $\Leftrightarrow$ \ref{case:G_maxNeigh}:  Definition~\ref{def:duallyChordal} (S.~\pageref{def:duallyChordal})
+    
+    \ref{case:G_dually} $\Leftrightarrow$ \ref{case:G_chordalClique}:  Satz~\ref{theo:CliqueChorDuallyChor} (S.~\pageref{theo:CliqueChorDuallyChor})
+    
+    \ref{case:G_dually} $\Leftrightarrow$ \ref{case:G_alphaLine}:  Satz~\ref{theo:AlphaAzyklDuallyChordal} (S.~\pageref{theo:AlphaAzyklDuallyChordal})
+
+    \ref{case:G_dually} $\Leftrightarrow$ \ref{case:G_SpanningClique}:  Satz~\ref{theo:DuallyChordalSpanningTree} (S.~\pageref{theo:DuallyChordalSpanningTree})
+
+    \ref{case:G_SpanningClique} $\Leftrightarrow$ \ref{case:G_SpanningPath}:  Satz~\ref{theo:SpanningTree} (S.~\pageref{theo:SpanningTree})
+\qed
+\end{Proof}

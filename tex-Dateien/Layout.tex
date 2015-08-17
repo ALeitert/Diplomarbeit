@@ -1,0 +1,747 @@
+% Verknüpfungen in der PDF
+\usepackage{url}
+\usepackage{hyperref}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Quellcode
+\usepackage{listings}
+\lstdefinelanguage{blub}{sensitive=false,morekeywords={for,each,mod,if,to,else,while,end,then,Procedure,Function,until,new,in,do,and,or}}
+\lstset{%inputencoding=utf8/latin1,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{darkgreen},
+	numbers=none,
+	breaklines=true,
+	showstringspaces=false,
+	tabsize=4,
+	captionpos=b,
+	float=htp,
+	language=blub,
+%	backgroundcolor=\color{clLight80Orange},
+	mathescape=true,
+	frame=single,
+	rulecolor=\color{clBlue},
+	morecomment=[l]{//},
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% (Farbige) Rahmen
+\usepackage{framed}
+\setlength{\fboxrule}{.5pt}
+\setlength{\fboxsep}{4pt}
+
+
+\newenvironment{CodeFrame}{
+    \def\FrameCommand{\fcolorbox{clBlue}{white!0}}
+    \MakeFramed{\advance\hsize-\width \FrameRestore}
+  }
+  {\endMakeFramed}
+
+\newenvironment{ProofFrame}{
+    \setlength{\fboxrule}{0pt}
+    \setlength{\fboxsep}{0pt}
+    \def\FrameCommand{\fcolorbox{white!0}{white!0}}
+    \MakeFramed{\advance\hsize-\width \FrameRestore}
+  }
+  {\endMakeFramed}
+
+\newenvironment{DefFrame}{
+    \def\FrameCommand{\fcolorbox{clLight80Blue!33}{clLight80Blue!33}}
+    \MakeFramed{\advance\hsize-\width \FrameRestore}
+  }
+  {\endMakeFramed}
+
+\newenvironment{AlgoFrame}{
+    \def\FrameCommand{\fcolorbox{clLight40Orange}{clLight80Orange!50}}
+    \MakeFramed{\advance\hsize-\width \FrameRestore}
+  }
+  {\endMakeFramed}
+
+\newenvironment{ToDoFrame}{
+    \def\FrameCommand{\fcolorbox{clRed}{clLight40Red!33}}
+    \MakeFramed{\advance\hsize-\width \FrameRestore}
+  }
+  {\endMakeFramed}
+
+\newenvironment{TheoFrame}{
+    \def\FrameCommand{\fcolorbox{clDark25Green}{clLight40Green!33}}
+    \MakeFramed{\advance\hsize-\width \FrameRestore}
+  }
+  {\endMakeFramed}
+
+\newenvironment{LemFrame}{
+    \def\FrameCommand{\fcolorbox{clLight40Green!33}{clLight40Green!33}}
+    \MakeFramed{\advance\hsize-\width \FrameRestore}
+  }
+  {\endMakeFramed}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Blöcke für Definitionen, Sätze und Beweise
+\usepackage[framed,standard,hyperref]{ntheorem}
+
+\theoremstyle{plain}
+\theoremheaderfont{\rmfamily\bfseries\boldmath}
+\theorembodyfont{\normalfont}
+\theoremseparator{}
+\theoremprework{}
+\theorempreskipamount 0pt
+\theorempostskipamount 0pt
+
+\newtheorem{TheoBox}{Satz}[chapter]
+\newtheorem{LemBox}{Lemma}[chapter]
+\newtheorem*{LemBoxS}{Lemma}
+
+\newtheorem*{myProof}{Beweis}
+
+\theoremstyle{break}
+\theoremheaderfont{\rmfamily\bfseries\boldmath}
+\theorembodyfont{\normalfont}
+\theoremseparator{}
+\theoremprework{\vspace*{11pt}}
+\theorempreskipamount 0pt
+\theorempostskipamount 0pt
+
+\theoremstyle{break}
+\theoremheaderfont{\rmfamily\bfseries\boldmath}
+\theorembodyfont{\normalfont}
+\theoremseparator{}
+\theoremprework{}
+\theorempreskipamount 0pt
+\theorempostskipamount 0pt
+
+\newtheorem{DefBox}{Definition}[chapter]
+\newtheorem{AlgoBox}{Algorithmus}[chapter]
+
+\newenvironment{mydef}%[1][]%
+{\begin{DefFrame}\begin{DefBox}%[#1]
+}%
+{\end{DefBox}\end{DefFrame}}
+ 
+\newenvironment{Algorithm}%[1][]%
+{\begin{AlgoFrame}\begin{AlgoBox}%[#1]
+}%
+{\end{AlgoBox}\end{AlgoFrame}}
+ 
+\renewenvironment{Theorem}%
+{\begin{TheoFrame}\begin{TheoBox}}%
+{\end{TheoBox}\end{TheoFrame}} 
+
+\renewenvironment{Lemma}%
+{\begin{LemFrame}\begin{LemBox}}%
+{\end{LemBox}\end{LemFrame}} 
+
+\newenvironment{LemmaS}%
+{\begin{LemFrame}\begin{LemBoxS}}%
+{\end{LemBoxS}\end{LemFrame}} 
+
+\renewenvironment{Proof}%
+{\begin{myProof}\ \nopagebreak\\}%
+{\end{myProof}} 
+
+\makeatletter % Anpssung der Theorem-Konstrukte: \endtrivlist                          wird früher verwendet, um den erzeugten Platz am Ende des Theorems zu entfernen. Dient primär dazu, damit es in einem gefärbten Frame besser aussieht.
+\gdef\@thm#1#2#3{%
+   \if@thmmarks
+     \stepcounter{end\InTheoType ctr}%
+   \fi
+   \renewcommand{\InTheoType}{#1}%
+   \if@thmmarks
+     \stepcounter{curr#1ctr}%
+     \setcounter{end#1ctr}{0}%
+   \fi
+   \refstepcounter{#2}%
+   \theorem@prework
+   \thm@topsepadd \theorempostskipamount   % cf. latex.ltx: \@trivlist
+   \ifvmode \advance\thm@topsepadd\partopsep\fi
+   \trivlist                          
+   \@topsep \theorempreskipamount
+   \@topsepadd \thm@topsepadd        % used by \@endparenv
+   \advance\linewidth -\theorem@indent
+   \advance\@totalleftmargin \theorem@indent
+   \parshape \@ne \@totalleftmargin \linewidth
+   \@ifnextchar[{\@ythm{#1}{#2}{#3}}{\@xthm{#1}{#2}{#3}}}\endtrivlist %%%%%%%%%%%%%%%% neu
+\gdef\@endtheorem{%
+  %\endtrivlist                          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \csname\InTheoType @postwork\endcsname
+  }
+
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bilder und Abbildungen
+
+\usepackage[font=footnotesize,labelfont=bf,justification=raggedright,hang]{caption}
+%\renewcommand{\captionfont}{\footnotesize\sffamily}
+%\renewcommand{\captionlabelfont}{\bfseries}
+\usepackage{graphicx} % Bilder
+\usepackage[format=default,justification=raggedright]{subfig} % Abbildungen aus mehreren Bildern
+
+% Rahmen für Abbildungen in einen Befehl kapseln
+\newcommand{\floatimage}[3]{\begin{figure}[htb]
+\centering
+#3
+\caption{#2}
+\label{#1}
+\end{figure}}
+
+% Mathe Symbole
+\usepackage{amssymb}
+\usepackage{amsmath}
+\DeclareRobustCommand{\qed}{%
+  \ifmmode \square%\mathqed
+  \else
+    \leavevmode\newline\unskip\penalty9999 \hbox{}\nobreak\hfill
+    \quad\hbox{$\square$}%
+  \fi
+}
+
+% ToDo-Befehl
+\newcommand{\todo}[1]{
+    \begin{ToDoFrame}\itshape
+        {\rmfamily\normalsize\bfseries ToDo:} #1
+    \end{ToDoFrame}
+}
+
+% Abstand nach einem Absatz
+\newcommand{\parspace}{\setlength{\parskip}{11pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Farben
+\usepackage[table]{xcolor}
+\definecolor{clDefBG}{rgb}{.776,.850,.941}
+\definecolor{clSecTxt}{rgb}{.122,.286,.490}
+\definecolor{clChapTxt}{rgb}{.090,.212,.365}%{.06,.14,.24}
+
+\definecolor{clLight80Blue}{rgb}{.776,.850,.941}
+\definecolor{clLight60Blue}{rgb}{.553,.584,.886}
+\definecolor{clLight40Blue}{rgb}{.329,.553,.831}
+\definecolor{clBlue}{rgb}{.122,.286,.490}
+\definecolor{clDark25Blue}{rgb}{.090,.212,.365}
+\definecolor{clDark50Blue}{rgb}{.059,.141,.243}
+
+\definecolor{clLight80Green}{rgb}{.886,.894,.906}
+\definecolor{clLight60Green}{rgb}{.843,.890,.737}
+\definecolor{clLight40Green}{rgb}{.765,.839,.608}
+\definecolor{clGreen}{rgb}{.608,.733,.349}
+\definecolor{clDark25Green}{rgb}{.463,.573,.235}
+\definecolor{clDark50Green}{rgb}{.310,.380,.157}
+
+%\definecolor{clLight80Green}{rgb}{.886,.894,.906}
+%\definecolor{clLight60Green}{rgb}{.843,.890,.737}
+\definecolor{clLight40Red}{rgb}{.851,.588,.580}
+\definecolor{clRed}{rgb}{.753,.314,.302}
+%\definecolor{clDark25Green}{rgb}{.463,.573,.235}
+%\definecolor{clDark50Green}{rgb}{.310,.380,.157}
+
+\definecolor{clViolet}{HTML}{8064A2}
+
+\definecolor{clLight80Orange}{HTML}{FDEADA}
+\definecolor{clLight60Orange}{HTML}{FBD5B5}
+\definecolor{clLight40Orange}{HTML}{FAC08F}
+\definecolor{clOrange}{HTML}{F79646}
+\definecolor{clDark25Orange}{HTML}{E36C09}
+\definecolor{clDark50Orange}{HTML}{974806}
+
+\definecolor{clAqua}{HTML}{4BACC6}
+
+% Schrift
+\usepackage[T1]{fontenc} 
+\usepackage{lmodern}
+\usepackage{textcomp}
+
+% Computer Modern Sans Serif als Standard-Schrift 
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+
+\makeatletter
+\renewcommand{\section}{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\rmfamily\Large\bfseries\boldmath\color{clBlue}}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\rmfamily\large\bfseries\boldmath\color{clBlue}}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\rmfamily\normalsize\bfseries\boldmath\color{clBlue}}}
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+                                    {3.25ex \@plus1ex \@minus.2ex}%
+                                    {-1em}%
+                                    {\rmfamily\normalsize\boldmath\bfseries}}
+
+
+
+
+%---------------------------------------------
+% \Part ändern
+%
+
+\renewcommand\part{%
+  \if@openright
+    \cleardoublepage
+  \else
+    \clearpage
+  \fi
+  \thispagestyle{empty}%
+  \if@twocolumn
+    \onecolumn
+    \@tempswatrue
+  \else
+    \@tempswafalse
+  \fi
+  \null\vspace*{\fill}
+  \secdef\@part\@spart}
+
+\def\@part[#1]#2{%
+    \ifnum \c@secnumdepth >-2\relax
+      \refstepcounter{part}%
+      \addcontentsline{toc}{part}{\thepart\hspace{1em}#1}%
+    \else
+      \addcontentsline{toc}{part}{#1}%
+    \fi
+    \markboth{}{}%
+    {\centering
+     \interlinepenalty \@M
+     \normalfont\raggedleft
+     \color{clChapTxt}\rule{\linewidth}{1pt}
+     \ifnum \c@secnumdepth >-2\relax
+       \normalsize\bfseries\boldmath \partname\nobreakspace\thepart
+       \\
+       %\vskip 20\p@
+     \fi
+     \Huge \bfseries\boldmath #2\par
+     \rule[\baselineskip]{\linewidth}{1pt}
+     }%
+    \@endpart}
+    
+\def\@spart#1{%
+    {\centering
+     \interlinepenalty \@M
+     \normalfont\raggedleft
+     \color{clChapTxt}\rule{\linewidth}{1pt}
+     \Huge \bfseries\boldmath #1\par
+     \rule[\baselineskip]{\linewidth}{1pt}}%
+    \@endpart}
+    
+\def\@endpart{
+    \vspace*{\fill}
+    \vspace*{\fill}
+    \vspace*{\fill}
+    \newpage
+              \if@twoside
+               \if@openright
+                \null
+                \thispagestyle{empty}%
+                \newpage
+               \fi
+              \fi
+              \if@tempswa
+                \twocolumn
+              \fi}
+              
+
+%---------------------------------------------
+% \Chapter ändern
+%
+\renewcommand\chapter{\if@openright\cleardoublepage\else\clearpage\fi
+                    \thispagestyle{plain}%
+                    \global\@topnum\z@
+                    \@afterindentfalse
+                    \secdef\@chapter\@schapter}
+\def\@makechapterhead#1{%
+    {\parspace
+     \parbox[t][25\p@]{\linewidth}
+     {\parindent \z@ \raggedright \rmfamily
+     \ifnum \c@secnumdepth >\m@ne \vspace{\fill}
+         \normalsize \bfseries \textcolor{clChapTxt}{\@chapapp\space \thechapter}
+     \fi}
+     \par\nobreak  \vskip 5\p@
+     \interlinepenalty\@M   \raggedright \rmfamily
+     \Huge \bfseries\boldmath \textcolor{clChapTxt}{#1}\par\nobreak
+     \vskip 40\p@
+    }}
+\def\@makeschapterhead#1{%
+    {\parspace
+     \parbox[t][25\p@]{\linewidth}{}
+     \parindent \z@ \raggedright
+     \par\nobreak  \vskip 5\p@
+     \interlinepenalty\@M
+     \Huge \rmfamily \bfseries\boldmath  \textcolor{clChapTxt}{#1}\par\nobreak
+     \vskip 40\p@
+  }}
+
+
+
+%---------------------------------------------
+% Kopfzeile
+
+\setlength{\headheight}{16.5pt}
+
+\if@twoside
+  \def\ps@headings{%
+    \def\@oddfoot{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {\thepage};
+        %\draw[clChapTxt,semithick] ($(current bounding box.north west)+(0,1pt)$) -- ($(current bounding box.north east)+(0,0pt)$);
+        %\draw[clChapTxt,semithick] (0,1em) -- ($(\linewidth,1em)-(0.0pt,0)$);
+        \draw[clChapTxt,semithick] (0.5\textwidth,1em) -- (current bounding box.north west)
+                                   (0.5\textwidth,1em) -- (current bounding box.north east);
+    }}
+    \def\@evenfoot{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {\thepage};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {};
+        %\draw[clChapTxt,semithick] ($(current bounding box.north west)+(0,1pt)$) -- ($(current bounding box.north east)+(0,0pt)$);
+        %\draw[clChapTxt,semithick] (0,1em) -- ($(\linewidth,1em)-(0.0pt,0)$);
+        \draw[clChapTxt,semithick] (0.5\textwidth,1em) -- (current bounding box.north west)
+                                   (0.5\textwidth,1em) -- (current bounding box.north east);
+    }}
+      
+   %   \def\@evenhead{\thepage\hfil\slshape\leftmark}%
+    \def\@evenhead{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {\rmfamily\small\textcolor{clChapTxt}\leftmark};
+        \draw[clChapTxt,semithick] (current bounding box.south west) -- (current bounding box.south east);
+    }}%
+    \def\@oddhead{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {\rmfamily\small\textcolor{clChapTxt}\rightmark};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {};
+        \draw[clChapTxt,semithick] (current bounding box.south west) -- (current bounding box.south east);
+    }}%
+      \let\@mkboth\markboth
+    \def\chaptermark##1{%
+      \markboth {{%
+        \ifnum \c@secnumdepth >\m@ne
+            \@chapapp\ \thechapter. \ %
+        \fi
+        ##1}}{}}%
+    \def\sectionmark##1{%
+      \markright {{%
+        \ifnum \c@secnumdepth >\z@
+          \thesection. \ %
+        \fi
+        ##1}}}}
+\else
+  \def\ps@headings{%
+    %\let\@oddfoot\@empty
+    \def\@oddfoot{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {\textcolor{black}\thepage};
+        %\draw[clChapTxt,semithick] ($(current bounding box.north west)+(0,1pt)$) -- ($(current bounding box.north east)+(0,0pt)$);
+        %\draw[clChapTxt,semithick] (0,1em) -- ($(\linewidth,1em)-(0.0pt,0)$);
+        \draw[clChapTxt,semithick] (0.5\textwidth,1em) -- (current bounding box.north west)
+                                   (0.5\textwidth,1em) -- (current bounding box.north east);
+    }}
+    \def\@oddhead{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {\rmfamily\small\textcolor{clChapTxt}\rightmark};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {};
+        \draw[clChapTxt,semithick] (current bounding box.south west) -- (current bounding box.south east);
+    }}%
+    \let\@mkboth\markboth
+    \def\chaptermark##1{%
+      \markright {%
+        \ifnum \c@secnumdepth >\m@ne
+            \@chapapp\ \thechapter. \ %
+        \fi
+        ##1}}}
+\fi
+
+
+
+\if@twoside
+  \def\ps@plain{%
+    %\let\@oddfoot\@empty
+    \def\@evenfoot{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {\textcolor{black}\thepage};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {};
+        \draw[clChapTxt,semithick] (0.5\textwidth,1em) -- (current bounding box.north west)
+                                   (0.5\textwidth,1em) -- (current bounding box.north east);
+    }}
+    \def\@evenhead{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {};
+        \draw[clChapTxt,semithick] (current bounding box.south west) -- (current bounding box.south east);
+    }}%
+    \def\@oddfoot{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {\textcolor{black}\thepage};
+        \draw[clChapTxt,semithick] (0.5\textwidth,1em) -- (current bounding box.north west)
+                                   (0.5\textwidth,1em) -- (current bounding box.north east);
+    }}
+    \def\@oddhead{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {};
+        \draw[clChapTxt,semithick] (current bounding box.south west) -- (current bounding box.south east);
+    }}%
+    \let\@mkboth\markboth
+    \def\chaptermark##1{%
+      \markright {%
+        \ifnum \c@secnumdepth >\m@ne
+            \@chapapp\ \thechapter. \ %
+        \fi
+        ##1}}}
+\else
+  \def\ps@plain{%
+    %\let\@oddfoot\@empty
+    \def\@oddfoot{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {\textcolor{black}\thepage};
+        \draw[clChapTxt,semithick] (0.5\textwidth,1em) -- (current bounding box.north west)
+                                   (0.5\textwidth,1em) -- (current bounding box.north east);
+    }}
+    \def\@oddhead{\tikz{
+        \node[inner xsep=0pt, anchor=base west] (chapNode) at (0,0) {};
+        \node[inner xsep=0pt, anchor=base east] (pageNode) at (\textwidth,0) {};
+        \draw[clChapTxt,semithick] (current bounding box.south west) -- (current bounding box.south east);
+    }}%
+    \let\@mkboth\markboth
+    \def\chaptermark##1{%
+      \markright {%
+        \ifnum \c@secnumdepth >\m@ne
+            \@chapapp\ \thechapter. \ %
+        \fi
+        ##1}}}
+\fi
+
+%---------------------------------------------
+% Inhaltsverzeichnis ändern, damit es auch Mathe-Symbole fett macht
+%
+\renewcommand*\l@part[2]{%
+  \ifnum \c@tocdepth >-2\relax
+    \addpenalty{-\@highpenalty}%
+    \addvspace{2.25em \@plus\p@}%
+    \setlength\@tempdima{3em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      {\leavevmode
+       \large \bfseries\boldmath\color{clBlue}\rule{\linewidth}{1pt} #1\hfil \hb@xt@\@pnumwidth{\hss #2}\\\rule[.5em]{\linewidth}{1pt}}\par \vspace*{-\baselineskip} %\par
+       %\large \bfseries\boldmath\color{clBlue} #1\hfil \hb@xt@\@pnumwidth{\hss #2}}\par
+       \nobreak
+         \global\@nobreaktrue
+         \everypar{\global\@nobreakfalse\everypar{}}%
+    \endgroup
+  \fi}
+\renewcommand*\l@chapter[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \vskip 1.0em \@plus\p@
+    \setlength\@tempdima{1.5em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries\boldmath\color{clBlue}
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
+      \penalty\@highpenalty
+    \endgroup
+  \fi}
+%---------------------------------------------
+
+  
+%---------------------------------------------
+% Anderen Abstract
+%
+\newenvironment{abstractFrame}
+{
+  \if@openright\cleardoublepage\else\clearpage\fi 
+  \null\vfil
+  \@beginparpenalty\@lowpenalty
+}
+{\par\null}
+
+\newenvironment{deAbstract}
+{
+  \selectlanguage{ngerman}
+  %\begin{center}%
+  %  {\bfseries\rmfamily \abstractname\vspace{-.5em}\vspace{\z@}}%
+  %\end{center}% 
+  \subsection*{\abstractname}
+}
+{\par\vfil}
+
+\newenvironment{enAbstract}
+{%
+  \selectlanguage{english}
+  %\begin{center}%
+  %  {\bfseries\rmfamily \abstractname\vspace{-.5em}\vspace{\z@}}%
+  %\end{center}% 
+  \subsection*{\abstractname}
+
+}%
+{\par\vfil}
+%---------------------------------------------
+
+
+\renewcommand{\tableofcontents}{%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \chapter*{\contentsname
+        \@mkboth{%
+           \contentsname}{\contentsname}}%
+    {\setlength{\parskip}{2pt}\@starttoc{toc}}%
+    \if@restonecol\twocolumn\fi
+    }
+
+\renewenvironment{thebibliography}[1]
+     {\chapter*{\bibname\ blub}\addcontentsline{toc}{chapter}{\bibname\ blub}%
+      \@mkboth{\bibname}{\bibname}%
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+    
+\renewcommand{\listoffigures}{%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \chapter*{\listfigurename}\addcontentsline{toc}{chapter}{\listfigurename}%
+      \@mkboth{\listfigurename}%
+              {\listfigurename}%
+    {\setlength{\parskip}{2pt}\@starttoc{lof}}%
+    \if@restonecol\twocolumn\fi
+    }
+\renewcommand\listoftables{%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \chapter*{\listtablename}\addcontentsline{toc}{chapter}{\listfigurename}%
+      \@mkboth{%
+          \listtablename}%
+         {\listtablename}%
+    {\setlength{\parskip}{2pt}\@starttoc{lot}}%
+    \if@restonecol\twocolumn\fi
+    }
+
+\renewcommand*\l@figure{\@dottedtocline{1}{0em}{2.3em}}
+\renewcommand*\l@table{\@dottedtocline{1}{0em}{2.3em}}
+
+\makeatother
+
+% Zeilenabstand
+\linespread{1.15}
+\parspace
+
+% Einrücken bei neuen Absatz
+\parindent 0pt
+
+% Linksbündig
+\raggedright
+
+% Abstand zwischen Überschrift und nachfolgendem Absatz veringern
+\usepackage{titlesec}
+\titlespacing{\section}{0pt}{*2}{*-1.3}
+\titlespacing{\subsection}{0pt}{*2}{*-1.3}
+\titlespacing{\subsubsection}{0pt}{*2}{*-1.3}
+
+% URLs in den Quellen erkennen
+%\usepackage{url}
+%\renewcommand\UrlFont{\ttfamily}
+
+
+% Literatur- und Abbildungsverzeichnis mit ins Inhaltsverzeichnis
+%\usepackage[nottoc,notlof,notlot]{tocbibind}
+
+% Literaturverzeichnis
+\usepackage[numbers]{natbib}
+\bibliographystyle{natdin}
+
+\makeatletter
+\renewenvironment{theindex}
+               {
+                %
+                \begin{multicols}{2}[\chapter*{\indexname}\addcontentsline{toc}{chapter}{\indexname}]
+                \@mkboth{\indexname}%
+                        {\indexname}%
+                \thispagestyle{plain}\parindent\z@
+                \parskip\z@ \@plus .3\p@\relax
+                \columnseprule \z@
+                \columnsep 35\p@
+                \let\item\@idxitem}
+               {\end{multicols}}
+               
+\renewcommand\bibsection{%
+      \chapter*{\bibname}\addcontentsline{toc}{chapter}{\bibname}
+      \@mkboth{\bibname}{\bibname}%
+    }
+\makeatother
+
+
+
+%\show\labelitemi
+ \newlength{\enumItemWidth}
+\renewenvironment{itemize}
+    {\begin{list}
+        {\settowidth{\enumItemWidth}{\labelenumi}\hspace*{-\enumItemWidth}\labelitemi}
+        {\setlength{\topsep}{0.5em}
+         \setlength{\itemsep}{0pt}
+         \setlength{\parskip}{0pt}
+         }
+    }
+    {\end{list}}
+\renewenvironment{enumerate}
+    {\begin{list}
+        {\settowidth{\enumItemWidth}{\labelenumi}\hspace*{-\enumItemWidth}\labelenumi}
+        {\usecounter{enumi}
+         \setlength{\topsep}{0.5em}
+         \setlength{\itemsep}{0pt}
+         \setlength{\parskip}{0pt}
+         }
+    }
+    {\end{list}}
+\renewcommand{\theenumi}{(\roman{enumi})}
+\renewcommand{\labelenumi}{\theenumi} 
+\renewcommand{\theenumii}{(\alph{enumii})}
+\renewcommand{\labelenumii}{\theenumii} 
+
+\newenvironment{codeLine}
+    {\begin{list}
+        {\settowidth{\enumItemWidth}{(\arabic{enumi})}\hspace*{-\enumItemWidth}(\arabic{enumi})}
+        {\usecounter{enumi}
+         \setlength{\topsep}{0.5em}
+         \setlength{\itemsep}{0pt}
+         \setlength{\parskip}{0pt}
+         }
+    }
+    {\end{list}}
+
+\newenvironment{innerCodeLine}
+    {\begin{list}
+        {\settowidth{\enumItemWidth}{\labelenumii}\hspace*{-\enumItemWidth}\labelenumii}
+        {\usecounter{enumii}
+         \setlength{\topsep}{0.5em}
+         \setlength{\itemsep}{0pt}
+         \setlength{\parskip}{0pt}
+         }
+    }
+    {\end{list}}
+
+        
+
+ 
